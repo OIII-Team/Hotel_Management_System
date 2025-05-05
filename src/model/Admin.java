@@ -5,6 +5,4 @@ public class Admin extends User
 {
     private String password;
 
-k
-
 }
