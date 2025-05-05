@@ -2,9 +2,6 @@ import model.Region;
 import model.User;
 import structures.HotelTree;
 import structures.UsersList;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
