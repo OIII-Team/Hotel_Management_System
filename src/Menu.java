@@ -14,9 +14,9 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
 while (true)
 {
-    System.out.println("Welcome to model.Hotel Management System!");
+    System.out.println("Welcome to Hotel Management System!");
     System.out.println("Please select one of the following options:");
-    System.out.println("1. model.User");
+    System.out.println("1. User");
     System.out.println("2. Admin");
     System.out.println("3. Exit");
 
@@ -47,7 +47,7 @@ while (true)
     public static void userMenu(Scanner scanner) {
         int userChoice;
         while (true) {
-            System.out.println("\n--- model.User Menu ---");
+            System.out.println("\n--- User Menu ---");
             System.out.println("1. View hotels");
             System.out.println("2. Search hotels by name");
             System.out.println("3. Cancel last booking");
@@ -103,13 +103,13 @@ while (true)
 
             switch (adminChoice) {
                 case 1:
-                    // add model.Hotel to HotelTree
+                    // add Hotel to HotelTree
                     break;
                 case 2:
                     // remove hotel by name
                     break;
                 case 3:
-                    // print all users
+                    users.printUsers();
                     break;
                 case 0:
                     return;

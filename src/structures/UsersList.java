@@ -53,4 +53,13 @@ public class UsersList
         return head;
     }
 
+    public void printUsers() {
+        UserNode current = head;
+        System.out.println("Users List:");
+        while (current != null) {
+            System.out.println("User's name: " + current.user.getName() + ", ID: " + current.user.getID() + ", Email: " + current.user.getEmail());
+            current = current.next;
+        }
+    }
+
 }
