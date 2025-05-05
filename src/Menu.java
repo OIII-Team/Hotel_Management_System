@@ -1,3 +1,4 @@
+import model.Admin;
 import model.Region;
 import model.User;
 import structures.HotelTree;
@@ -28,6 +29,7 @@ while (true)
             userMenu(scanner);
             break;
         case 2:
+            Admin admin = Admin.adminLogin(scanner);
             adminMenu(scanner);
             break;
         case 3:
