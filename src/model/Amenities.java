@@ -40,4 +40,13 @@ public enum Amenities {
     public String toString() {
         return displayName;
     }
+
+    public static Amenities fromString(String str) {
+        for (Amenities amenity : Amenities.values()) {
+            if (amenity.displayName.equalsIgnoreCase(str)) {
+                return amenity;
+            }
+        }
+        return null;
+    }
 }

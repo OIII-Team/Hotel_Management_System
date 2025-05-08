@@ -5,7 +5,7 @@ public enum Region
     NORTH("North"),
     SOUTH("South"),
     JERUSALEM("Jerusalem"),
-    CENTER("Center");  // סדר כרונולוגי לפי הדרישה שלך
+    CENTER("Center");
 
     private final String displayName;
 
