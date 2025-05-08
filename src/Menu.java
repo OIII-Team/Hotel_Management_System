@@ -58,16 +58,8 @@ while (true)
 
             switch (userChoice) {
                 case 1:
-                    System.out.println("Select a region to view hotels:");
-                    Region.printRegionOptions();
-                    int regionChoice = scanner.nextInt();
-                    scanner.nextLine();
-
-                    Region selectedRegion = Region.getRegionFromChoice(regionChoice);
-                    hotelTree.printCities(selectedRegion);
-                    System.out.println("Select a city to view hotels:");
-                    int cityChoice = scanner.nextInt();
-                    hotelTree.printHotelsByCity(selectedRegion, cityChoice);
+                    HotelsView hotelsView = new HotelsView(hotelTree);
+                    hotelsView.displayHotels();
                     break;
                 case 2:
                     // search hotels by name
@@ -96,7 +88,8 @@ while (true)
             System.out.println("\n--- Admin Menu ---");
             System.out.println("1. Add hotel");
             System.out.println("2. Remove hotel");
-            System.out.println("3. View all users in the system");
+            System.out.println("3. View Hotels by region");
+            System.out.println("4. View all users in the system");
             System.out.println("0. Back to main menu");
             System.out.print("Choice: ");
 
@@ -111,6 +104,11 @@ while (true)
                     // remove hotel by name
                     break;
                 case 3:
+                    // view hotels by region
+                    System.out.println("Select a region to view hotels:");
+                    Admin.viewHotelsByRegion(hotelTree);
+                    break;
+                case 4:
                     users.printUsers();
                     break;
                 case 0:

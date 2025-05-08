@@ -59,9 +59,16 @@ public class Admin extends User
         }
 
         /* ---------- City & Address ---------- */
-        System.out.print("City: ");
-        String city = sc.next();
-        sc.nextLine();
+        City selectedCity = null;
+        while (selectedCity == null) {
+            System.out.println("Choose City in " + selectedRegion.getDisplayName() + ":");
+            City.printCityOptions(selectedRegion);
+            int cityChoice = sc.nextInt();
+            sc.nextLine();
+            selectedCity = City.getCityFromChoice(selectedRegion, cityChoice);
+            if (selectedCity == null)
+                System.out.println("Invalid city, try again.");
+        }
         System.out.print("Address: ");
         String address = sc.nextLine();
 
@@ -89,12 +96,24 @@ public class Admin extends User
         double rating = sc.nextDouble();
         sc.nextLine();
 
-        Location loc   = new Location(selectedRegion, city, address);
+        Location loc   = new Location(selectedRegion,selectedCity, address);
         Hotel    hotel = new Hotel(name, selectedRegion, loc, price,
                 amenities, totalRooms, maxCapacity, null, rating, new BookingList());
 
         tree.addHotel(hotel);
         System.out.println("Hotel \"" + name + "\" added.");
+    }
+
+    public static void viewHotelsByRegion(HotelTree tree) {
+        Region.printRegionOptions();
+        Region region = null;
+        Scanner scanner = new Scanner(System.in);
+        region = Region.getRegionFromChoice(scanner.nextInt());
+
+        System.out.println("Hotels in " + region.getDisplayName() + ":");
+        for (Hotel hotel : tree.getHotels(region, null)) {
+            System.out.println("  - " + hotel.getName());
+        }
     }
 
 }

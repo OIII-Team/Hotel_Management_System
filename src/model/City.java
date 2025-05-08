@@ -20,12 +20,19 @@ public enum City
     HERZLIYA     ("Herzliya",     Region.CENTER),
     NETANYA      ("Netanya",      Region.CENTER);
 
-    private final String  displayName;
-    private final Region  region;
+    private String  displayName;
+    private Region  region;
 
     City(String displayName, Region region) {
         this.displayName = displayName;
         this.region      = region;
+    }
+
+    public static void printCityOptions(Region selectedRegion)
+    {
+        City[] cities = citiesOf(selectedRegion);
+        for (int i = 0; i < cities.length; i++)
+            System.out.println((i + 1) + ". " + cities[i].getDisplayName());
     }
 
     public String getDisplayName() { return displayName; }
@@ -52,8 +59,7 @@ public enum City
     }
 
     private static City[] citiesOf(Region region) {
-        return java.util.Arrays.stream(City.values())
-                .filter(c -> c.region == region)
+        return java.util.Arrays.stream(City.values()).filter(c -> c.region == region)
                 .toArray(City[]::new);
     }
 

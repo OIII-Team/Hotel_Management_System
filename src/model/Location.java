@@ -3,10 +3,10 @@ package model;
 public class Location
 {
     private Region region;
-    private String city;
+    private City city;
     private String address;
 
-    public Location(Region region, String city, String address) {
+    public Location(Region region, City city, String address) {
         this.region = region;
         this.city = city;
         this.address = address;
@@ -20,11 +20,11 @@ public class Location
         this.region = region;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 

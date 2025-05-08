@@ -6,23 +6,26 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class HotelTree {
+public class HotelTree
+{
     private final List<RegionNode> regions = new ArrayList<>();
 
-    public void addHotel(Hotel hotel) {
+    public void addHotel(Hotel hotel)
+    {
         if (hotel == null || hotel.getRegion() == null) return;
-        String city = cityOf(hotel);
+        City city = cityOf(hotel);
         if (city == null) return;
 
         RegionNode rNode = regionNode(hotel.getRegion(), true);
-        CityNode   cNode = cityNode(rNode, city, true);
+        CityNode cNode = cityNode(rNode, city, true);
         cNode.hotels.add(hotel);
     }
 
-    public HotelTree() {
+    public HotelTree()
+    {
         addHotel(new Hotel("Galilee Resort",
                 Region.NORTH,
-                new Location(Region.NORTH, "Tiberias", "Sea Road 1"),
+                new Location(Region.NORTH, City.TIBERIAS, "Sea Road 1"),
                 450.0,
                 new Amenities[]{Amenities.POOL, Amenities.WIFI},
                 20,
@@ -32,7 +35,8 @@ public class HotelTree {
                 new BookingList()));
     }
 
-    public boolean removeHotel(Region region, String city, String hotelName) {
+    public boolean removeHotel(Region region, City city, String hotelName)
+    {
         RegionNode rNode = regionNode(region, false);
         if (rNode == null) return false;
 
@@ -47,10 +51,26 @@ public class HotelTree {
         return removed;
     }
 
-    public List<Hotel> getHotels(Region region, String city) {
-        CityNode cNode = cityNode(regionNode(region, false), city, false);
-        return (cNode == null) ? List.of() : cNode.hotels;
+    public List<Hotel> getHotels(Region region, City city)
+    {
+        RegionNode rNode = regionNode(region, false);
+        if (rNode == null)
+        {
+            System.out.println("No hotels found in " + region.getDisplayName());
+            return List.of();
+        }
+
+        if (city == null)
+        {
+            List<Hotel> all = new ArrayList<>();
+            for (CityNode c : rNode.cities)
+                all.addAll(c.hotels);
+            return all;
+        }
+        CityNode cNode = cityNode(rNode, city, false);
+        return (cNode == null) ? List.of() : new ArrayList<>(cNode.hotels);
     }
+
 
     public Hotel findHotel(String hotelName) {
         for (RegionNode r : regions)
@@ -85,9 +105,9 @@ public class HotelTree {
     }
 
     private static class CityNode {
-        final String city;
+        final City city;
         final List<Hotel> hotels = new ArrayList<>();
-        CityNode(String city) { this.city = city; }
+        CityNode(City city) { this.city = city; }
     }
 
     private RegionNode regionNode(Region region, boolean create) {
@@ -102,10 +122,10 @@ public class HotelTree {
         return null;
     }
 
-    private CityNode cityNode(RegionNode rNode, String city, boolean create) {
+    private CityNode cityNode(RegionNode rNode, City city, boolean create) {
         if (rNode == null) return null;
         for (CityNode c : rNode.cities)
-            if (c.city.equalsIgnoreCase(city))
+            if (c.city == city)
                 return c;
         if (create) {
             CityNode c = new CityNode(city);
@@ -115,7 +135,7 @@ public class HotelTree {
         return null;
     }
 
-    private static String cityOf(Hotel h) {
+    private static City cityOf(Hotel h) {
         Location loc = h.getLocation();
         return (loc == null) ? null : loc.getCity();
     }
@@ -128,7 +148,7 @@ public class HotelTree {
         }
 
         List<CityNode> sorted = new ArrayList<>(rNode.cities);
-        sorted.sort(Comparator.comparing(c -> c.city, String.CASE_INSENSITIVE_ORDER));
+        sorted.sort(Comparator.comparing(c -> c.city.getDisplayName()));
 
         System.out.println("Cities in " + region.getDisplayName() + ":");
         for (int i = 0; i < sorted.size(); i++) {
@@ -143,7 +163,7 @@ public class HotelTree {
             System.out.println("Invalid city choice.");
             return;
         }
-        String cityName = cityEnum.getDisplayName();
+        City cityName = cityEnum;
         CityNode cNode = cityNode(regionNode(region, false),cityName, false);
         if (cNode == null) {
             System.out.println("No hotels found in " + city + ", " + region.getDisplayName());
