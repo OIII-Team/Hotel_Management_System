@@ -102,6 +102,7 @@ while (true)
                     break;
                 case 2:
                     // remove hotel by name
+                    Admin.removeHotelInteractive(scanner, hotelTree);
                     break;
                 case 3:
                     // view hotels by region

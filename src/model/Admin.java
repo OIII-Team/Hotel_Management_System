@@ -10,7 +10,7 @@ public class Admin extends User
 
     public Admin(String name, String email, String ID, String password)
     {
-        super(name, email, ID);
+        super(name, email, ID); // Constructor of User class - super is used to call the constructor of the parent class!
         this.password = "123456789";
     }
 
@@ -46,7 +46,7 @@ public class Admin extends User
         String name = sc.nextLine();
 
 
-        /* ---------- Region ---------- */
+        //Region
         Region selectedRegion = null;
         while (selectedRegion == null) {
             System.out.println("Choose Region:");
@@ -58,7 +58,7 @@ public class Admin extends User
                 System.out.println("Invalid region, try again.");
         }
 
-        /* ---------- City & Address ---------- */
+        //City
         City selectedCity = null;
         while (selectedCity == null) {
             System.out.println("Choose City in " + selectedRegion.getDisplayName() + ":");
@@ -72,7 +72,7 @@ public class Admin extends User
         System.out.print("Address: ");
         String address = sc.nextLine();
 
-        /* ---------- Price & Rooms ---------- */
+        //Price+Rooms
         System.out.print("Price per night: ");
         double price = sc.nextDouble();
         sc.nextLine();
@@ -80,7 +80,7 @@ public class Admin extends User
         int totalRooms = sc.nextInt();
         sc.nextLine();
 
-        /* ---------- Amenities ---------- */
+        //Amenities
         System.out.print("Amenities (comma-separated): ");
         String amenitiesInput = sc.nextLine();
         String[] tokens = amenitiesInput.split(",");
@@ -88,7 +88,7 @@ public class Admin extends User
         for (int i = 0; i < tokens.length; i++)
             amenities[i] = Amenities.fromString(tokens[i].trim());
 
-        /* ---------- Capacity & Rating ---------- */
+        //Capacity+Rating
         System.out.print("Max capacity: ");
         int maxCapacity = sc.nextInt();
         sc.nextLine();
@@ -102,6 +102,35 @@ public class Admin extends User
 
         tree.addHotel(hotel);
         System.out.println("Hotel \"" + name + "\" added.");
+    }
+
+    public static void removeHotelInteractive(Scanner sc, HotelTree tree) {
+        System.out.println("--Remove Hotel--");
+        sc.nextLine();
+        System.out.print("Enter hotel name to remove: ");
+        String name = sc.nextLine();
+        System.out.println("Enter hotel's region:");
+        Region.printRegionOptions();
+        int regChoice = sc.nextInt();
+        sc.nextLine();
+        Region selectedRegion = Region.getRegionFromChoice(regChoice);
+        System.out.println("Enter hotel's city:");
+        City.printCityOptions(selectedRegion);
+        int cityChoice = sc.nextInt();
+        sc.nextLine();
+        City selectedCity = City.getCityFromChoice(selectedRegion, cityChoice);
+        System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
+        String confirmation = sc.nextLine();
+        if (!confirmation.equalsIgnoreCase("yes")) {
+            System.out.println("Hotel removal cancelled.");
+            return;
+        }
+
+        if (tree.removeHotel(selectedRegion,selectedCity, name)) {
+            System.out.println("Hotel \"" + name + "\" removed.");
+        } else {
+            System.out.println("Hotel \"" + name + "\" not found.");
+        }
     }
 
     public static void viewHotelsByRegion(HotelTree tree) {
