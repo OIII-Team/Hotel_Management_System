@@ -1,17 +1,16 @@
 package model;
 
-import structures.CancellationBookingStack;
+import structures.BookingList;
+import structures.UsersBookingStack;
 import structures.UsersList;
 import java.util.Scanner;
-import java.util.List;
-import java.util.Stack;
 
 public class User
 {
     public String name;
     private String email;
     private String ID;
-    public CancellationBookingStack cancellationStack;
+    public UsersBookingStack bookingStack;
     public UsersList Users;
 
     public User(String name, String email, String ID)
@@ -19,12 +18,12 @@ public class User
         this.name = name;
         this.email = email;
         this.ID = ID;
-        this.cancellationStack = new CancellationBookingStack();
+        this.bookingStack = new UsersBookingStack();
     }
 
     public User()
     {
-        this.cancellationStack = new CancellationBookingStack();
+        this.bookingStack = new UsersBookingStack();
     }
 
     public void setName(String name)
@@ -78,16 +77,12 @@ public class User
 
     public void viewUpcomingBookings()
     {
-        // Logic to view upcoming bookings
-        System.out.println("Upcoming bookings for user: " + name);
-        // Display booking details
-    }
-
-    public void viewLastCancellation()
-    {
-        // Logic to view last cancellation
-        System.out.println("Last cancellation for user: " + name);
-        // Display cancellation details
+        if (bookingStack.isEmpty()) {
+            System.out.println("You have no upcoming bookings.");
+            return;
+        }
+        System.out.println("\nYour upcoming bookings (latest first):");
+        bookingStack.printStack();
     }
 
     //Method for registering a new user or logging in an existing one
@@ -135,8 +130,31 @@ public class User
 
     public void PrintUserDetails()
     {
-        System.out.println("User ID: " + ID);
         System.out.println("Name: " + name);
+        System.out.println("User ID: " + ID);
         System.out.println("Email: " + email);
     }
+
+    public void cancelLastBooking(Scanner sc) {
+        Booking last = bookingStack.peek();
+        if (last == null) {
+            System.out.println("No active bookings to cancel.");
+            return;
+        }
+
+        System.out.println("\nLast booking:");
+        last.printLine();
+        System.out.print("Cancel it? (yes/no) ");
+
+        if (!sc.nextLine().trim().equalsIgnoreCase("yes")) {
+            System.out.println("Cancellation aborted.");
+            return;
+        }
+
+        last.cancelBooking();
+        System.out.println("Booking cancelled.");
+    }
+
+    public void addBooking(Booking b)            { bookingStack.push(b); }
+    public void removeBooking()            { bookingStack.pop(); }
 }

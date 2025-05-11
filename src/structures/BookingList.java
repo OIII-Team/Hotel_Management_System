@@ -1,44 +1,52 @@
 package structures;
-import model.Amenities;
 import model.Booking;
+import java.util.List;
+import java.util.ArrayList;
 
 public class BookingList
 {
     private BookingNode head;
+    private BookingNode tail;
+    private int size;
 
     public BookingList() {
         this.head = null;
     }
 
     public void addBooking(Booking booking) {
-        BookingNode newNode = new BookingNode(booking);
-        if (head == null) {
-            head = newNode;
-        } else {
-            BookingNode current = head;
-            while (current.next != null) {
-                current = current.next;
+            BookingNode n = new BookingNode(booking);
+            if (head == null) {
+                head = tail = n;
+            } else {
+                tail.next = n;
+                tail = n;
             }
-            current.next = newNode;
+            size++;
         }
-    }
 
-    public void removeBooking(Booking booking) {
+    public void removeBooking(Booking booking)
+    {
         if (head == null) return;
 
         if (head.booking.equals(booking)) {
             head = head.next;
+            if (head == null) tail = null;
+            size--;
             return;
         }
-
-        BookingNode current = head;
-        while (current.next != null && !current.next.booking.equals(booking)) {
-            current = current.next;
+        for (BookingNode cur = head; cur.next != null; cur = cur.next) {
+            if (cur.next.booking.equals(booking)) {
+                cur.next = cur.next.next;
+                if (cur.next == null) tail = cur;
+                size--;
+                break;
+            }
         }
+    }
 
-        if (current.next != null) {
-            current.next = current.next.next;
-        }
+    public int size()
+    {
+        return size;
     }
 
     private static class BookingNode {
@@ -49,5 +57,12 @@ public class BookingList
             this.booking = booking;
             this.next = null;
         }
+    }
+
+    public List<Booking> asList() {
+        List<Booking> lst = new ArrayList<>(size);
+        for (BookingNode cur = head; cur != null; cur = cur.next)
+            lst.add(cur.booking);
+        return List.copyOf(lst);
     }
 }

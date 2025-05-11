@@ -1,7 +1,7 @@
 package model;
 import structures.BookingList;
 import structures.ReviewList;
-
+import java.time.LocalDate;
 import java.util.List;
 
 public class Hotel
@@ -17,6 +17,7 @@ public class Hotel
     private double rating;
     private BookingList bookings;
 
+
     public Hotel(String name, Region region, Location location, double pricePerNight,
                  Amenities[] amenities, int totalRooms, int maxCapacity,
                  ReviewList review, double rating, BookingList bookings) {
@@ -29,7 +30,7 @@ public class Hotel
         this.maxCapacity = maxCapacity;
         this.review = review;
         this.rating = rating;
-        this.bookings = bookings;
+        this.bookings = (bookings != null) ? bookings : new BookingList();
     }
 
     public Hotel() {
@@ -172,6 +173,25 @@ public class Hotel
     public void removeBooking(Booking booking)
     {
         bookings.removeBooking(booking);
+    }
+
+    public boolean isRoomAvailable(LocalDate checkIn, LocalDate checkOut)
+    {
+        if (checkOut.isBefore(checkIn) || checkOut.isEqual(checkIn))
+            throw new IllegalArgumentException("checkOut must be after checkIn");
+
+        int overlapping = 0;
+
+        for (Booking b : bookings.asList()) {
+            boolean overlap = !b.getCheckOut().isBefore(checkIn) && !checkOut.isBefore(b.getCheckIn());
+
+            if (overlap) {
+                overlapping++;
+                if (overlapping >= totalRooms)
+                    return false;
+            }
+        }
+        return true;
     }
 
 }

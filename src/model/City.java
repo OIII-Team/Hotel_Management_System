@@ -12,7 +12,7 @@ public enum City
     BEER_SHEVA   ("Beer Sheva",   Region.SOUTH),
     MITZPE_RAMON ("Mitzpe Ramon", Region.SOUTH),
 
-    //J
+    //Jerusalem
     JERUSALEM    ("Jerusalem",    Region.JERUSALEM),
 
     //Center

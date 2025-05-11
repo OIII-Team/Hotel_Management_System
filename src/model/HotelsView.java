@@ -1,49 +1,158 @@
 package model;
-import java.util.List;
-import java.util.Scanner;
 
 import structures.HotelTree;
+import java.time.LocalDate;
+import java.util.*;
 
-public class HotelsView
-{
-    private HotelTree hotelTree;
+public class HotelsView {
 
-    public HotelsView(HotelTree hotelTree)
-    {
-        this.hotelTree = hotelTree;
+    private final HotelTree tree;
+
+    public HotelsView(HotelTree tree) { this.tree = tree; }
+
+    /* ---------------- run ---------------- */
+    public void run(Scanner sc, User user) {
+        Region region = chooseRegion(sc);
+        if (region == null) return;
+
+        List<Hotel> view = new ArrayList<>(tree.getHotels(region, null));
+        if (view.isEmpty()) {
+            System.out.println("No hotels in this region.");
+            return;
+        }
+
+        applyFilters(sc, view);
+        applySort(sc, view);
+
+        if (view.isEmpty()) {
+            System.out.println("No hotels match your criteria.");
+            return;
+        }
+        printList(view);
+
+        System.out.print("\nEnter hotel's number to book (0 = abort): ");
+        int idx = readInt(sc);
+        if (idx < 1 || idx > view.size()) return;
+
+        Hotel hotel = view.get(idx - 1);
+        makeBookingFlow(sc, user, hotel);
     }
-    public void displayHotels()
-    {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Select a region to view hotels:");
+
+    /* =====================================================
+   filters  –  price • rating • amenities • zimmer
+   ===================================================== */
+    private void applyFilters(Scanner sc, List<Hotel> list) {
+
+        /* ---------- price ---------- */
+        System.out.print("Max price per night (0 = skip): ");
+        double maxPrice = sc.nextDouble(); sc.nextLine();
+        if (maxPrice > 0)
+            list.removeIf(h -> h.getPricePerNight() > maxPrice);
+
+        /* ---------- rating ---------- */
+        System.out.print("Min rating (0-5, 0 = skip): ");
+        double minRating = sc.nextDouble(); sc.nextLine();
+        if (minRating > 0)
+            list.removeIf(h -> h.getRating() < minRating);
+
+        /* ---------- amenities ---------- */
+        Amenities[] all = Amenities.values();
+        System.out.println("Select desired amenities (comma-separated numbers, 0 = none):");
+        for (int i = 0; i < all.length; i++)
+            System.out.printf("%d. %s%n", i + 1, all[i]);
+
+        String line = sc.nextLine().trim();
+        if (!line.equals("0") && !line.isBlank()) {
+
+            Set<Amenities> wanted = new HashSet<>();
+            for (String tok : line.split(",")) {
+                try {
+                    int idx = Integer.parseInt(tok.trim()) - 1;
+                    if (idx >= 0 && idx < all.length)
+                        wanted.add(all[idx]);
+                } catch (NumberFormatException ignore) {}
+            }
+
+            if (!wanted.isEmpty())
+                list.removeIf(h -> !Set.of(h.getAmenities()).containsAll(wanted));
+        }
+
+        /* ---------- zimmer ---------- */
+        System.out.print("Only Zimmer (cabin)? (yes/no) ");
+        if (sc.nextLine().equalsIgnoreCase("yes"))
+            list.removeIf(h -> !(h instanceof Zimmer));
+    }
+
+    /* =====================================================
+       helper
+       ===================================================== */
+    private void applySort(Scanner sc, List<Hotel> list) {
+        System.out.print("Sort by (1=price↑ 2=price↓ 3=rating↑ 4=rating↓ 0=none): ");
+        switch (readInt(sc)) {
+            case 1 -> list.sort(Comparator.comparingDouble(Hotel::getPricePerNight));
+            case 2 -> list.sort(Comparator.comparingDouble(Hotel::getPricePerNight).reversed());
+            case 3 -> list.sort(Comparator.comparingDouble(Hotel::getRating));
+            case 4 -> list.sort(Comparator.comparingDouble(Hotel::getRating).reversed());
+        }
+    }
+
+    /* =====================================================
+       helper
+       ===================================================== */
+    private void makeBookingFlow(Scanner sc, User user, Hotel hotel) {
+        try {
+                LocalDate today = LocalDate.now();
+                LocalDate in;
+                while (true) {
+                    System.out.print("Check-in (yyyy-MM-dd): ");
+                    in = LocalDate.parse(sc.nextLine());
+                    if (!in.isBefore(today)) break;
+                    System.out.println("Date is in the past. Please choose a future date.");
+                }
+
+                System.out.print("Nights: ");
+                int nights = readInt(sc);
+
+                Booking b = Booking.create(user, hotel, in, in.plusDays(nights));
+                System.out.println("\nBooking confirmed!\n");
+                System.out.println("Hi " + user.getName() + ", thank you for booking with us!");
+                b.printBookingDetails();
+        } catch (Exception ex) {
+            System.out.println("⚠ " + ex.getMessage());
+        }
+    }
+
+    /* =====================================================
+       utility
+       ===================================================== */
+    private Region chooseRegion(Scanner sc) {
+        System.out.println("Select region:");
         Region.printRegionOptions();
-        int regionChoice   = scanner.nextInt();
-        scanner.nextLine();
-        Region selectedRegion = Region.getRegionFromChoice(regionChoice);
-        if (selectedRegion == null) {
-            System.out.println("Invalid region choice.");
-            return;
-        }
+        return Region.getRegionFromChoice(readInt(sc));
+    }
 
-        System.out.println("Select a city to view hotels:");
-        City.printCityOptions(selectedRegion);
-        int cityChoice     = scanner.nextInt();
-        scanner.nextLine();
-        City selectedCity  = City.getCityFromChoice(selectedRegion, cityChoice);
-        if (selectedCity == null) {
-            System.out.println("Invalid city choice.");
-            return;
-        }
-        List<Hotel> hotels = hotelTree.getHotels(selectedRegion, selectedCity);
-        System.out.println("\nHotels in " + selectedCity.getDisplayName() + ":");
+    /* ------------- printList -------------- */
+    private void printList(List<Hotel> list) {
+        list.sort(Comparator.comparing((Hotel h) -> h.getLocation().getCity().getDisplayName()).thenComparing(Hotel::getName));
 
-        if (hotels.isEmpty())
-        {
-            System.out.println("No hotels found ):");
-        } else
-        {
-            for (Hotel h : hotels)
-                System.out.println("  - " + h.getName());
+        String currentCity = "";
+        int i = 1;
+
+        for (Hotel h : list) {
+            String cityName = h.getLocation().getCity().getDisplayName();
+
+            if (!cityName.equals(currentCity)) {
+                currentCity = cityName;
+                System.out.println("\n--- " + currentCity + " ---");
+            }
+
+            System.out.printf("%d) %s | ₪%.0f | %.1f★%n",
+                    i++, h.getName(), h.getPricePerNight(), h.getRating());
         }
+    }
+
+    private int readInt(Scanner sc) {
+        int v = sc.nextInt(); sc.nextLine();
+        return v;
     }
 }

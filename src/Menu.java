@@ -7,6 +7,7 @@ public class Menu {
     private static UsersList users = new UsersList();
     private static HotelTree hotelTree = new HotelTree();
     private static Amenities[] amenities = new Amenities[10];
+    private static User currentUser;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 while (true)
@@ -24,7 +25,7 @@ while (true)
     switch (choice)
     {
         case 1:
-            User user = User.loginOrRegister(scanner, users);
+            currentUser = User.loginOrRegister(scanner, users);
             userMenu(scanner);
             break;
         case 2:
@@ -55,20 +56,24 @@ while (true)
             System.out.print("Choice: ");
 
             userChoice = scanner.nextInt();
+            scanner.nextLine();
 
             switch (userChoice) {
                 case 1:
                     HotelsView hotelsView = new HotelsView(hotelTree);
-                    hotelsView.displayHotels();
+                    hotelsView.run(scanner, currentUser);
                     break;
                 case 2:
                     // search hotels by name
                     break;
                 case 3:
                     // pop from BookingStack
+                    currentUser.cancelLastBooking(scanner);
+
                     break;
                 case 4:
                     // view upcoming bookings
+                    currentUser.viewUpcomingBookings();
                     break;
                 case 5:
                     // write Review
