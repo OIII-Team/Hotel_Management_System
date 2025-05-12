@@ -1,8 +1,7 @@
 package model;
-import exceptions.HotelSystemExceptions;
 
 public interface Payable
 {
-    boolean processPayment(User user, double amount) throws HotelSystemExceptions;
+    boolean processPayment(User user, double amount);
     double calculateFee(double amount);
 }

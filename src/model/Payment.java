@@ -21,24 +21,15 @@ public abstract class Payment implements Payable
     {
         return amount;
     }
-    public double calculateFee(double amount){
+
+    public double calculateFee(double amount)
+    {
         if (amount != this.amount)
             throw new HotelSystemExceptions("Amount does not match the payment amount");
         return amount * 0.025;
     }
 
-    public boolean processPayment(User user, double amount) throws HotelSystemExceptions
-    {
-        try
-        {
-            validatePayment();
-            return true;
-        } catch (HotelSystemExceptions e)
-        {
-            System.out.println("Payment failed!");
-            return false;
-        }
-    }
+    public abstract boolean processPayment(User user, double netAmount);
+    protected abstract void validatePayment() throws HotelSystemExceptions;
 
-    public abstract void validatePayment() throws HotelSystemExceptions;
 }

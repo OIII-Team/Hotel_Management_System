@@ -2,7 +2,7 @@ package model;
 import structures.BookingList;
 import structures.ReviewList;
 import java.time.LocalDate;
-import java.util.List;
+
 
 public class Hotel
 {

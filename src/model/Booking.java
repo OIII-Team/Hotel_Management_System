@@ -12,7 +12,7 @@ public class Booking
     public LocalDate checkIn;
     public LocalDate checkOut;
     private double totalPrice;
-    protected Payment payment;
+    protected Payable payer;
 
     public Booking(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut) throws HotelSystemExceptions
     {
@@ -34,7 +34,7 @@ public class Booking
         this.totalPrice = hotel.getPricePerNight() * nights;
     }
 
-    public static Booking create(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut) throws HotelSystemExceptions {
+    public static Booking create(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut, Payable payer) throws HotelSystemExceptions {
 
         Objects.requireNonNull(user);
         Objects.requireNonNull(hotel);
@@ -50,6 +50,15 @@ public class Booking
         hotel.addBooking(booking);
         user.addBooking(booking);
 
+        double total = booking.getTotalPrice();
+        double fee    = payer.calculateFee(total);
+        double baseAmount    = total - fee;
+
+        boolean success = payer.processPayment(user, baseAmount);
+        if (!success) {
+            booking.cancelBooking();
+            return null;
+        }
         return booking;
     }
 

@@ -2,6 +2,9 @@ package model;
 
 import structures.HotelTree;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.*;
 import java.time.YearMonth;
 
@@ -32,12 +35,12 @@ public class HotelsView {
         printList(view);
         while (true)
         {
-            System.out.println("\n Select hotel to view its details:");
+            System.out.println("\n Select hotel to view its details: ");
             int idx = readInt(sc);
             if (idx < 1 || idx > view.size()) break;
             Hotel hotel = view.get(idx - 1);
             hotel.printHotelDetails();
-            System.out.println("\n Would you like to book this hotel? (yes/no)");
+            System.out.print("\nWould you like to book this hotel? (yes/no) ");
             String resp = sc.nextLine().trim();
             if (resp.equalsIgnoreCase("yes"))
             {
@@ -119,70 +122,64 @@ public class HotelsView {
             LocalDate in;
             while (true) {
                 System.out.print("Check-in (yyyy-MM-dd): ");
-                in = LocalDate.parse(sc.nextLine());
-                if (!in.isBefore(today)) break;
-                System.out.println("Date is in the past. Please choose a future date.");
+                String line = sc.nextLine().trim();
+                try {
+                    in = LocalDate.parse(line);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format or out‐of‐range values. Try again: ");
+                    continue;
+                }
+                if (in.isBefore(today)) {
+                    System.out.println("Date is in the past. Please choose a future date.");
+                    continue;
+                }
+                break;
             }
             System.out.print("Nights: ");
             int nights = readInt(sc);
             LocalDate out = in.plusDays(nights);
 
-            Booking b = Booking.create(user, hotel, in, out);
-            double total = b.getTotalPrice();
-
-
-            System.out.printf("Amount: ₪%.0f", total);
-            System.out.println("\nSelect payment method:");
+            double total = hotel.getPricePerNight() * nights;
+            System.out.printf("Amount: ₪%.0f%n", total);
+            System.out.println("Select payment method:");
             System.out.println("1) Credit Card");
             System.out.println("2) PayPal");
 
-            double fee = 0;
-            double baseAmount = 0;
-            boolean paid = false;
-            while (!paid) {
+            Payable payer;
+            while (true) {
                 int choice = readInt(sc);
-                Payable payer;
-                switch (choice) {
-                    case 1 -> {
-                        System.out.print("Card Number (16 digits): ");
-                        String cardNum = sc.nextLine().trim();
-                        System.out.print("CVV (3 digits): ");
-                        String cvv = sc.nextLine().trim();
-                        System.out.print("Expiry (MM/yyyy): ");
-                        String[] parts = sc.nextLine().split("/");
-                        YearMonth exp = YearMonth.of(
-                                Integer.parseInt(parts[1].trim()),
-                                Integer.parseInt(parts[0].trim()));
-                        payer = new CreditCardPayment(total, today, cardNum,cvv,exp);
-                    }
-                    case 2 -> {
-                        System.out.print("PayPal Email: ");
-                        String email = sc.nextLine().trim();
-                        System.out.println("Please confirm your PayPal account by account's ID: ");
-                        String id = sc.nextLine().trim();
-                        payer = new PaypalPayment(total, today, email, id);
-                    }
-                    default -> {
-                        System.out.println("Invalid choice — please select 1 or 2.");
-                        continue;
-                    }
+                if (choice == 1) {
+                    System.out.print("Card Number (16 digits): ");
+                    String cardNum = sc.nextLine().trim();
+                    System.out.print("CVV (3 digits): ");
+                    String cvv = sc.nextLine().trim();
+                    System.out.print("Expiry (MM/yyyy): ");
+                    String[] parts = sc.nextLine().split("/");
+                    YearMonth exp = YearMonth.of(
+                            Integer.parseInt(parts[1].trim()),
+                            Integer.parseInt(parts[0].trim()));
+                    payer = new CreditCardPayment(total,today, cardNum, cvv, exp);
+                    System.out.println("Booking confirmed. Thank you!\n");
+                    break;
                 }
-                fee = payer.calculateFee(total);
-                baseAmount = total - fee;
-                paid = payer.processPayment(user, baseAmount);
-                if (!paid) {
-                    System.out.println("Please try again.");
-                    return;
+                if (choice == 2) {
+                    System.out.print("PayPal Email: ");
+                    String email = sc.nextLine().trim();
+                    System.out.print("PayPal Account ID for confirmation: ");
+                    String id = sc.nextLine().trim();
+                    payer = new PaypalPayment(total,today, email, id);
+                    System.out.println("Booking confirmed. Thank you!\n");
+                    break;
                 }
+                System.out.println("Invalid choice — please select 1 or 2.");
             }
 
-            System.out.println("\nPayment successful!");
-            System.out.printf("Paid: ₪%.0f (including Fee of: ₪%.0f%n)", total, fee);
-            System.out.println("Booking confirmed. Thank you!");
-            b.printBookingDetails();
+            Booking booking = Booking.create(user, hotel, in, out, payer);
+
+            booking.printBookingDetails();
 
         } catch (Exception ex) {
-            System.out.println("⚠ " + ex.getMessage());
+            System.out.println(ex.getMessage());
         }
     }
 
