@@ -1,8 +1,13 @@
 package model;
+
 import java.util.Scanner;
+
+import com.googlecode.lanterna.gui2.dialogs.MessageDialogBuilder;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import model.User;
 import structures.HotelTree;
 import structures.BookingList;
+import com.googlecode.lanterna.gui2.*;
 
 public class Admin extends User
 {
@@ -145,4 +150,37 @@ public class Admin extends User
         }
     }
 
+    public static void addHotelInteractiveLanterna(MultiWindowTextGUI gui, HotelTree tree) {
+        Window window = new BasicWindow("Add New Hotel");
+        Panel panel = new Panel(new GridLayout(2));
+
+        TextBox nameBox = new TextBox();
+        panel.addComponent(new Label("Name:"));
+        panel.addComponent(nameBox);
+
+        // Additional fields for region, city, price, etc., can be added here
+
+        panel.addComponent(new Button("Add Hotel", () -> {
+            String name = nameBox.getText();
+            // Create and add the hotel to the tree
+            tree.addHotel(new Hotel(name, null, null, 0, null, 0, 0, null, 0, null));
+            gui.addWindowAndWait(new MessageDialogBuilder()
+                    .setTitle("Success")
+                    .setText("Hotel \"" + name + "\" added.")
+                    .addButton(MessageDialogButton.OK)
+                    .build());
+            window.close();
+        }));
+
+        window.setComponent(panel);
+        gui.addWindowAndWait(window);
+    }
+
+    public static void removeHotelInteractiveLanterna(MultiWindowTextGUI gui, HotelTree tree) {
+        // Similar implementation for removing a hotel
+    }
+
+    public static void viewHotelsByRegionLanterna(MultiWindowTextGUI gui, HotelTree tree) {
+        // Similar implementation for viewing hotels by region
+    }
 }

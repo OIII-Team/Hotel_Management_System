@@ -8,6 +8,7 @@ import java.time.YearMonth;
 import model.Payable;
 import model.CreditCardPayment;
 import model.PaypalPayment;
+import com.googlecode.lanterna.gui2.*;
 
 public class HotelsView {
 
@@ -43,13 +44,25 @@ public class HotelsView {
         makeBookingFlow(sc, user, hotel);
     }
 
+    public void runLanterna(MultiWindowTextGUI gui, User user) {
+        Window window = new BasicWindow("Hotels View");
+        Panel panel = new Panel(new GridLayout(1));
+
+        // Display hotels and allow filtering/sorting
+        // Use Lanterna components like ComboBox, ListBox, etc.
+
+        panel.addComponent(new Button("Back", window::close));
+        window.setComponent(panel);
+        gui.addWindowAndWait(window);
+    }
+
     /* =====================================================
    filters  –  price • rating • amenities • zimmer
    ===================================================== */
     private void applyFilters(Scanner sc, List<Hotel> list) {
 
         /* ---------- price ---------- */
-        System.out.print("Max price per night (0 = skip): ");
+        System.out.print("Max price per night in ILS ₪ (0 = skip): ");
         double maxPrice = sc.nextDouble(); sc.nextLine();
         if (maxPrice > 0)
             list.removeIf(h -> h.getPricePerNight() > maxPrice);
