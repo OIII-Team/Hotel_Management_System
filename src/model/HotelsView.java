@@ -2,12 +2,8 @@ package model;
 
 import structures.HotelTree;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.time.YearMonth;
-import model.Payable;
-import model.CreditCardPayment;
-import model.PaypalPayment;
 
 public class HotelsView {
 
@@ -119,54 +115,58 @@ public class HotelsView {
             LocalDate out = in.plusDays(nights);
 
             Booking b = Booking.create(user, hotel, in, out);
-            double baseAmount = b.getTotalPrice();
-            double fee       = baseAmount * 0.025;
-            double total     = baseAmount + fee;
+            double total = b.getTotalPrice();
 
-            System.out.printf("Amount: ₪%.0f, Fee (2.5%%): ₪%.0f, Total: ₪%.0f%n", baseAmount, fee, total);
-            System.out.println("Select payment method:");
+
+            System.out.printf("Amount: ₪%.0f", total);
+            System.out.println("\nSelect payment method:");
             System.out.println("1) Credit Card");
             System.out.println("2) PayPal");
-            int choice = readInt(sc);
 
-            Payable payer;
-            switch (choice) {
-                case 1 -> {
-                    System.out.print("Card Number (16 digits): ");
-                    String cardNum = sc.nextLine().trim();
-                    System.out.print("CVV (3 digits): ");
-                    String cvv     = sc.nextLine().trim();
-                    System.out.print("Expiry (MM/yyyy): ");
-                    String[] parts = sc.nextLine().split("/");
-                    YearMonth exp  = YearMonth.of(
-                            Integer.parseInt(parts[1].trim()),
-                            Integer.parseInt(parts[0].trim()));
-                    payer = new CreditCardPayment(total, today,cardNum, cvv, exp);
+            double fee = 0;
+            double baseAmount = 0;
+            boolean paid = false;
+            while (!paid) {
+                int choice = readInt(sc);
+                Payable payer;
+                switch (choice) {
+                    case 1 -> {
+                        System.out.print("Card Number (16 digits): ");
+                        String cardNum = sc.nextLine().trim();
+                        System.out.print("CVV (3 digits): ");
+                        String cvv = sc.nextLine().trim();
+                        System.out.print("Expiry (MM/yyyy): ");
+                        String[] parts = sc.nextLine().split("/");
+                        YearMonth exp = YearMonth.of(
+                                Integer.parseInt(parts[1].trim()),
+                                Integer.parseInt(parts[0].trim()));
+                        payer = new CreditCardPayment(total, today, cardNum,cvv,exp);
+                    }
+                    case 2 -> {
+                        System.out.print("PayPal Email: ");
+                        String email = sc.nextLine().trim();
+                        System.out.println("Please confirm your PayPal account by account's ID: ");
+                        String id = sc.nextLine().trim();
+                        payer = new PaypalPayment(total, today, email, id);
+                    }
+                    default -> {
+                        System.out.println("Invalid choice — please select 1 or 2.");
+                        continue;
+                    }
                 }
-                case 2 -> {
-                    System.out.print("PayPal Email: ");
-                    String email = sc.nextLine().trim();
-                    System.out.println("Please confirm your PayPal account by account's ID: ");
-                    String id = sc.nextLine().trim();
-
-                    payer = new PaypalPayment(total, today, email, id);
-                }
-                default -> {
-                    System.out.println("Invalid choice — booking cancelled.");
-                    b.cancelBooking();
-                    return;
+                fee = payer.calculateFee(total);
+                baseAmount = total - fee;
+                paid = payer.processPayment(user, baseAmount);
+                if (!paid) {
+                    System.out.println("Payment failed — please try again.");
                 }
             }
 
-            if (payer.processPayment(user, baseAmount)) {
-                System.out.println("Payment successful!");
-                System.out.printf("Paid: ₪%.0f, Fee: ₪%.0f%n", baseAmount, fee);
-                System.out.println("Booking confirmed. Thank you!");
-                b.printBookingDetails();
-            } else {
-                System.out.println("Payment failed — booking cancelled.");
-                b.cancelBooking();
-            }
+            System.out.println("\nPayment successful!");
+            System.out.printf("Paid: ₪%.0f (including Fee of: ₪%.0f%n)", total, fee);
+            System.out.println("Booking confirmed. Thank you!");
+            b.printBookingDetails();
+
         } catch (Exception ex) {
             System.out.println("⚠ " + ex.getMessage());
         }
