@@ -69,7 +69,6 @@ while (true)
                 case 3:
                     // pop from BookingStack
                     currentUser.cancelLastBooking(scanner);
-
                     break;
                 case 4:
                     // view upcoming bookings
