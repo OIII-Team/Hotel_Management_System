@@ -12,7 +12,7 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
 while (true)
 {
-    System.out.println("Welcome to Hotel Management System!");
+    System.out.println("\nWelcome to Hotel Management System!");
     System.out.println("Please select one of the following options:");
     System.out.println("1. User");
     System.out.println("2. Admin");

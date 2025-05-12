@@ -30,17 +30,30 @@ public class HotelsView {
             return;
         }
         printList(view);
-
-        System.out.print("\nEnter hotel's number to book (0 = abort): ");
-        int idx = readInt(sc);
-        if (idx < 1 || idx > view.size()) return;
-
-        Hotel hotel = view.get(idx - 1);
-        makeBookingFlow(sc, user, hotel);
+        while (true)
+        {
+            System.out.println("\n Select hotel to view its details:");
+            int idx = readInt(sc);
+            if (idx < 1 || idx > view.size()) break;
+            Hotel hotel = view.get(idx - 1);
+            hotel.printHotelDetails();
+            System.out.println("\n Would you like to book this hotel? (yes/no)");
+            String resp = sc.nextLine().trim();
+            if (resp.equalsIgnoreCase("yes"))
+            {
+                makeBookingFlow(sc, user, hotel);
+                break;
+            } else if (resp.equalsIgnoreCase("no")) {
+                System.out.println("Returning to hotel list...");
+                continue;
+            } else {
+                System.out.println("Invalid response. Returning to hotel list...");
+            }
+        }
     }
 
     /* =====================================================
-   filters  –  price • rating • amenities • zimmer
+   filters  –  price • rating • amenities • tsimmer
    ===================================================== */
     private void applyFilters(Scanner sc, List<Hotel> list) {
 
@@ -78,10 +91,10 @@ public class HotelsView {
                 list.removeIf(h -> !Set.of(h.getAmenities()).containsAll(wanted));
         }
 
-        /* ---------- zimmer ---------- */
-        System.out.print("Only Zimmer (cabin)? (yes/no) ");
+        /* ---------- Tsimmer ---------- */
+        System.out.print("Only Tsimmer (cabin)? (yes/no) ");
         if (sc.nextLine().equalsIgnoreCase("yes"))
-            list.removeIf(h -> !(h instanceof Zimmer));
+            list.removeIf(h -> !(h instanceof Tsimmer));
     }
 
     /* =====================================================
@@ -158,7 +171,8 @@ public class HotelsView {
                 baseAmount = total - fee;
                 paid = payer.processPayment(user, baseAmount);
                 if (!paid) {
-                    System.out.println("Payment failed — please try again.");
+                    System.out.println("Please try again.");
+                    return;
                 }
             }
 

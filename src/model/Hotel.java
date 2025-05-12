@@ -194,4 +194,20 @@ public class Hotel
         return true;
     }
 
+    public void printHotelDetails()
+    {
+        System.out.println("Hotel Name: " + name);
+        System.out.println("Region: " + region);
+        System.out.println("Location: " + location.getCity() + ", " + location.getAddress());
+        System.out.println("Price per Night: " + getPricePerNight() + "₪");
+        System.out.println("Total Rooms: " + totalRooms);
+        System.out.println("Max Capacity: " + maxCapacity);
+        System.out.println("Rating: " + rating);
+        System.out.println("Amenities: ");
+        printAmenities();
+    }
+
+
+
+
 }
