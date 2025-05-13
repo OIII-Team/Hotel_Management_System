@@ -48,6 +48,7 @@ public class HotelsView {
                 break;
             } else if (resp.equalsIgnoreCase("no")) {
                 System.out.println("Returning to hotel list...");
+                printList(view);
                 continue;
             } else {
                 System.out.println("Invalid response. Returning to hotel list...");
@@ -58,46 +59,76 @@ public class HotelsView {
     /* =====================================================
    filters  –  price • rating • amenities • tsimmer
    ===================================================== */
-    private void applyFilters(Scanner sc, List<Hotel> list) {
+    private void applyFilters(Scanner sc, List<Hotel> list)
+    {
 
         /* ---------- price ---------- */
         System.out.print("Max price per night (0 = skip): ");
-        double maxPrice = sc.nextDouble(); sc.nextLine();
+        double maxPrice = sc.nextDouble();
+        sc.nextLine();
         if (maxPrice > 0)
             list.removeIf(h -> h.getPricePerNight() > maxPrice);
 
         /* ---------- rating ---------- */
         System.out.print("Min rating (0-5, 0 = skip): ");
-        double minRating = sc.nextDouble(); sc.nextLine();
+        double minRating = sc.nextDouble();
+        sc.nextLine();
         if (minRating > 0)
             list.removeIf(h -> h.getRating() < minRating);
 
         /* ---------- amenities ---------- */
         Amenities[] all = Amenities.values();
-        System.out.println("Select desired amenities (comma-separated numbers, 0 = none):");
-        for (int i = 0; i < all.length; i++)
-            System.out.printf("%d. %s%n", i + 1, all[i]);
+        Set<Amenities> wanted = new HashSet<>();
 
-        String line = sc.nextLine().trim();
-        if (!line.equals("0") && !line.isBlank()) {
-
-            Set<Amenities> wanted = new HashSet<>();
-            for (String tok : line.split(",")) {
-                try {
-                    int idx = Integer.parseInt(tok.trim()) - 1;
-                    if (idx >= 0 && idx < all.length)
-                        wanted.add(all[idx]);
-                } catch (NumberFormatException ignore) {}
+        while (true) {
+            System.out.println("Select desired amenities (comma-separated numbers, 0 = none):");
+            for (int i = 0; i < all.length; i++) {
+                System.out.printf("%d. %s%n", i + 1, all[i]);
             }
 
-            if (!wanted.isEmpty())
-                list.removeIf(h -> !Set.of(h.getAmenities()).containsAll(wanted));
+            String line = sc.nextLine().trim();
+            if (line.equals("0") || line.isBlank()) {
+                break;
+            }
+
+            String[] tokens = line.split(",");
+            boolean valid = true;
+            wanted.clear();
+
+            for (String tok : tokens) {
+                tok = tok.trim();
+                try {
+                    int idx = Integer.parseInt(tok) - 1;
+                    if (idx < 0 || idx >= all.length) {
+                        valid = false;
+                        break;
+                    }
+                    wanted.add(all[idx]);
+                } catch (NumberFormatException e) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                System.out.println("Invalid input. Please enter numbers between 1 and "
+                        + all.length + " separated by commas, or 0 for none.");
+                continue;
+            }
+
+            list.removeIf(h -> {
+                Amenities[] ams = h.getAmenities();
+                return ams == null || !Set.of(ams).containsAll(wanted);
+            });
+            break;
         }
 
         /* ---------- Tsimmer ---------- */
         System.out.print("Only Tsimmer (cabin)? (yes/no) ");
         if (sc.nextLine().equalsIgnoreCase("yes"))
+        {
             list.removeIf(h -> !(h instanceof Tsimmer));
+        }
     }
 
     /* =====================================================
@@ -159,7 +190,6 @@ public class HotelsView {
                             Integer.parseInt(parts[1].trim()),
                             Integer.parseInt(parts[0].trim()));
                     payer = new CreditCardPayment(total,today, cardNum, cvv, exp);
-                    System.out.println("Booking confirmed. Thank you!\n");
                     break;
                 }
                 if (choice == 2) {
@@ -168,13 +198,13 @@ public class HotelsView {
                     System.out.print("PayPal Account ID for confirmation: ");
                     String id = sc.nextLine().trim();
                     payer = new PaypalPayment(total,today, email, id);
-                    System.out.println("Booking confirmed. Thank you!\n");
                     break;
                 }
                 System.out.println("Invalid choice — please select 1 or 2.");
             }
-
             Booking booking = Booking.create(user, hotel, in, out, payer);
+            System.out.println("Booking confirmed. Thank you!\n");
+
 
             booking.printBookingDetails();
 

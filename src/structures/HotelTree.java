@@ -10,6 +10,7 @@ public class HotelTree
 {
     private final List<RegionNode> regions = new ArrayList<>();
 
+
     public void addHotel(Hotel hotel)
     {
         if (hotel == null || hotel.getRegion() == null) return;
@@ -21,19 +22,7 @@ public class HotelTree
         cNode.hotels.add(hotel);
     }
 
-    public HotelTree()
-    {
-        addHotel(new Hotel("Galilee Resort",
-                Region.NORTH,
-                new Location(Region.NORTH, City.TIBERIAS, "Sea Road 1"),
-                450.0,
-                new Amenities[]{Amenities.POOL, Amenities.WIFI},
-                20,
-                3,
-                null,
-                4.5,
-                new BookingList()));
-    }
+    public HotelTree()  {}
 
     public boolean removeHotel(Region region, City city, String hotelName)
     {
@@ -56,7 +45,6 @@ public class HotelTree
         RegionNode rNode = regionNode(region, false);
         if (rNode == null)
         {
-            System.out.println("No hotels found in " + region.getDisplayName());
             return List.of();
         }
 

@@ -98,7 +98,7 @@ public class Admin extends User
 
         Location loc   = new Location(selectedRegion,selectedCity, address);
         Hotel    hotel = new Hotel(name, selectedRegion, loc, price,
-                amenities, totalRooms, maxCapacity, null, rating, new BookingList());
+                amenities, totalRooms, maxCapacity, null, rating, new BookingList(), new HotelTree());
 
         tree.addHotel(hotel);
         System.out.println("Hotel \"" + name + "\" added.");

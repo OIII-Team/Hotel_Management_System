@@ -1,5 +1,6 @@
 package model;
 import structures.BookingList;
+import structures.HotelTree;
 import structures.ReviewList;
 import java.time.LocalDate;
 
@@ -16,11 +17,12 @@ public class Hotel
     private ReviewList review;
     private double rating;
     private BookingList bookings;
+    private HotelTree tree;
 
 
     public Hotel(String name, Region region, Location location, double pricePerNight,
                  Amenities[] amenities, int totalRooms, int maxCapacity,
-                 ReviewList review, double rating, BookingList bookings) {
+                 ReviewList review, double rating, BookingList bookings, HotelTree tree) {
         this.name = name;
         this.region = region;
         this.location = location;
@@ -31,6 +33,7 @@ public class Hotel
         this.review = review;
         this.rating = rating;
         this.bookings = (bookings != null) ? bookings : new BookingList();
+        this.tree = (tree != null) ? tree : new HotelTree();
     }
 
     public Hotel() {
@@ -163,6 +166,14 @@ public class Hotel
                 System.out.println(" - " + a);
             }
         }
+    }
+
+    public void addHotelToTree(Hotel hotel)
+    {
+        if (tree == null) {
+            tree = new HotelTree();
+        }
+        tree.addHotel(hotel);
     }
 
     public void addBooking(Booking booking)
