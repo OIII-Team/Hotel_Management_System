@@ -9,18 +9,20 @@ import java.time.YearMonth;
 public class HotelsView {
 
     private final HotelTree tree;
-    private User currentUser;
     private Region selectedRegion;
-
+    private User currentUser;
 
     public HotelsView(HotelTree tree) { this.tree = tree; }
 
     /* ---------------- run ---------------- */
     public void run(Scanner sc, User user) {
+        this.currentUser = user;
+
         Region region = chooseRegion(sc);
         if (region == null) return;
+        this.selectedRegion = region;
 
-        List<Hotel> view = new ArrayList<>(tree.getHotels(region, null));
+        List<Hotel> view = new ArrayList<>(tree.getHotels(selectedRegion, null));
         if (view.isEmpty()) {
             System.out.println("No hotels in this region.");
             return;
@@ -45,7 +47,7 @@ public class HotelsView {
             String resp = sc.nextLine().trim();
             if (resp.equalsIgnoreCase("yes"))
             {
-                makeBookingFlow(sc, user, hotel);
+                makeBookingFlow(sc, hotel);
                 break;
             } else if (resp.equalsIgnoreCase("no")) {
                 System.out.println("Returning to hotel list...");
@@ -58,11 +60,10 @@ public class HotelsView {
     }
 
     /* =====================================================
-   filters  –  price • rating • amenities • tsimmer
-   ===================================================== */
+       filters  –  price • rating • amenities • tsimmer
+       ===================================================== */
     private void applyFilters(Scanner sc, List<Hotel> list)
     {
-
         /* ---------- price ---------- */
         System.out.print("Max price per night (0 = skip): ");
         double maxPrice = sc.nextDouble();
@@ -126,9 +127,12 @@ public class HotelsView {
 
         /* ---------- Tsimmer ---------- */
         System.out.print("Only Tsimmer (cabin)? (yes/no) ");
-        if (sc.nextLine().equalsIgnoreCase("yes"))
+        while(true)
         {
-            list.removeIf(h -> !(h instanceof Tsimmer));
+            String line = sc.nextLine().trim();
+            if (line.equalsIgnoreCase("yes") || line.equalsIgnoreCase("no"))
+                break;
+            System.out.print("Invalid response. Please enter 'yes' or 'no': ");
         }
     }
 
@@ -148,7 +152,7 @@ public class HotelsView {
     /* =====================================================
        helper
        ===================================================== */
-    private void makeBookingFlow(Scanner sc, User user, Hotel hotel) {
+    private void makeBookingFlow(Scanner sc, Hotel hotel) {
         try {
             LocalDate today = LocalDate.now();
             LocalDate in;
@@ -203,9 +207,8 @@ public class HotelsView {
                 }
                 System.out.println("Invalid choice — please select 1 or 2.");
             }
-            Booking booking = Booking.create(user, hotel, in, out, payer);
+            Booking booking = Booking.create(currentUser, hotel, in, out, payer);
             System.out.println("Booking confirmed. Thank you!\n");
-
 
             booking.printBookingDetails();
 
