@@ -1,6 +1,5 @@
 package model;
 import java.util.Scanner;
-import model.User;
 import structures.HotelTree;
 import structures.BookingList;
 

@@ -2,15 +2,16 @@ package model;
 
 import structures.HotelTree;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
 import java.util.*;
 import java.time.YearMonth;
 
 public class HotelsView {
 
     private final HotelTree tree;
+    private User currentUser;
+    private Region selectedRegion;
+
 
     public HotelsView(HotelTree tree) { this.tree = tree; }
 

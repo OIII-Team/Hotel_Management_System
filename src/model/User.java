@@ -1,6 +1,5 @@
 package model;
 
-import structures.BookingList;
 import structures.UsersBookingStack;
 import structures.UsersList;
 import java.util.Scanner;
