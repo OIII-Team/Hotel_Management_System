@@ -6,7 +6,6 @@ import java.util.Scanner;
 public class Menu {
     private static UsersList users = new UsersList();
     private static HotelTree hotelTree = new HotelTree();
-    private static Amenities[] amenities = new Amenities[10];
     private static User currentUser;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -65,6 +64,7 @@ while (true)
                     break;
                 case 2:
                     // search hotels by name
+                    hotelTree.searchHotelByName(scanner, hotelTree);
                     break;
                 case 3:
                     // pop from BookingStack
@@ -76,6 +76,7 @@ while (true)
                     break;
                 case 5:
                     // write Review
+                    currentUser.leaveReview(scanner, hotelTree);
                     break;
                 case 0:
                     System.out.println("Returning to main menu...");

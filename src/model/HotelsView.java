@@ -43,13 +43,24 @@ public class HotelsView {
             if (idx < 1 || idx > view.size()) break;
             Hotel hotel = view.get(idx - 1);
             hotel.printHotelDetails();
-            System.out.print("\nWould you like to book this hotel? (yes/no) ");
+            System.out.println("Would you like to see hotel's reviews? (yes/no) ");
             String resp = sc.nextLine().trim();
             if (resp.equalsIgnoreCase("yes"))
             {
+                hotel.printReviewList();
+            } else if (resp.equalsIgnoreCase("no")) {
+                System.out.println("Returning to hotel list...");
+                continue;
+            } else {
+                System.out.println("Invalid response. Returning to hotel list...");
+            }
+            System.out.print("\nWould you like to book this hotel? (yes/no) ");
+            String resp1 = sc.nextLine().trim();
+            if (resp1.equalsIgnoreCase("yes"))
+            {
                 makeBookingFlow(sc, hotel);
                 break;
-            } else if (resp.equalsIgnoreCase("no")) {
+            } else if (resp1.equalsIgnoreCase("no")) {
                 System.out.println("Returning to hotel list...");
                 printList(view);
                 continue;

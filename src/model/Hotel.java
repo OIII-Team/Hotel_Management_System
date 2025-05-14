@@ -14,15 +14,14 @@ public class Hotel
     public Location location;
     private int totalRooms;
     private int maxCapacity; //Each room
-    private ReviewList review;
     private double rating;
     private BookingList bookings;
     private HotelTree tree;
+    private ReviewList reviewList;
 
 
     public Hotel(String name, Region region, Location location, double pricePerNight,
-                 Amenities[] amenities, int totalRooms, int maxCapacity,
-                 ReviewList review, double rating, BookingList bookings, HotelTree tree) {
+                 Amenities[] amenities, int totalRooms, int maxCapacity, double rating, BookingList bookings, HotelTree tree, ReviewList reviewList){
         this.name = name;
         this.region = region;
         this.location = location;
@@ -30,10 +29,10 @@ public class Hotel
         this.amenities = amenities;
         this.totalRooms = totalRooms;
         this.maxCapacity = maxCapacity;
-        this.review = review;
         this.rating = rating;
         this.bookings = (bookings != null) ? bookings : new BookingList();
         this.tree = (tree != null) ? tree : new HotelTree();
+        this.reviewList = (reviewList != null) ? reviewList : new ReviewList();
     }
 
     public Hotel() {
@@ -115,11 +114,11 @@ public class Hotel
     }
 
     public ReviewList getReview(){
-        return review;
+        return reviewList;
     }
-    public void setReview(ReviewList review)
+    public void setReview(ReviewList reviewList)
     {
-        this.review = review;
+        this.reviewList = reviewList;
     }
 
     public double getRating()
@@ -219,6 +218,27 @@ public class Hotel
     }
 
 
+    public void addReview(Review review)
+    {
+        if (this.reviewList == null) {
+            this.reviewList = new ReviewList();
+        }
+        reviewList.addReview(review);
+    }
 
+    public ReviewList getReviewList()
+    {
+        return reviewList;
+    }
+    public void printReviewList()
+    {
+        if (reviewList == null || reviewList.isEmpty()) {
+            System.out.println("No reviews available.");
+        } else {
+            for (Review r : reviewList.asList()) {
+                r.printReview();
+            }
+        }
+    }
 
 }

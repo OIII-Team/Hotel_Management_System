@@ -2,6 +2,8 @@ package model;
 
 import structures.UsersBookingStack;
 import structures.UsersList;
+import structures.HotelTree;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class User
@@ -86,6 +88,7 @@ public class User
 
     //Method for registering a new user or logging in an existing one
     public static User loginOrRegister(Scanner scanner, UsersList users) {
+        System.out.println("Welcome to User's login page!");
         System.out.print("Enter your ID (9 digits): ");
         String id = scanner.nextLine();
 
@@ -156,4 +159,46 @@ public class User
 
     public void addBooking(Booking b)            { bookingStack.push(b); }
     public void removeBooking()            { bookingStack.pop(); }
+
+    public void leaveReview(Scanner sc, HotelTree tree) {
+        System.out.print("Enter hotel name to review: ");
+        String name = sc.nextLine().trim();
+        Hotel hotel = tree.findHotel(name);
+        if (hotel == null) {
+            System.out.println("Hotel not found. Returning to menu.");
+            return;
+        }
+
+        System.out.print("\n-- Leave a Review for " + hotel.getName() + " --\n");
+        System.out.print("Your rating (1–5): ");
+        int rating;
+        while (true) {
+            String line = sc.nextLine().trim();
+            try {
+                rating = Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Enter a number 1–5: ");
+                continue;
+            }
+            if (rating >= 1 && rating <= 5) break;
+            System.out.print("Invalid range. Enter 1–5: ");
+        }
+
+        System.out.print("Your comment: ");
+        String comment = sc.nextLine().trim();
+        while (comment.isBlank()) {
+            System.out.print("Cannot be empty. Try again: ");
+            comment = sc.nextLine().trim();
+        }
+        System.out.print("Are you sure you want to submit this review? (yes/no) ");
+        String confirmation = sc.nextLine().trim();
+        if (!confirmation.equalsIgnoreCase("yes")) {
+            System.out.println("Review submission cancelled.");
+            return;
+        }
+        Review review = new Review(this, hotel, rating, comment, LocalDateTime.now());
+        hotel.getReview().addReview(review);
+
+        System.out.println("Thank you! Your review has been added.");
+    }
 }

@@ -2,6 +2,7 @@ package model;
 import java.util.Scanner;
 import structures.HotelTree;
 import structures.BookingList;
+import structures.ReviewList;
 
 public class Admin extends User
 {
@@ -97,7 +98,7 @@ public class Admin extends User
 
         Location loc   = new Location(selectedRegion,selectedCity, address);
         Hotel    hotel = new Hotel(name, selectedRegion, loc, price,
-                amenities, totalRooms, maxCapacity, null, rating, new BookingList(), new HotelTree());
+                amenities, totalRooms, maxCapacity, rating, new BookingList(), new HotelTree(), new ReviewList());
 
         tree.addHotel(hotel);
         System.out.println("Hotel \"" + name + "\" added.");

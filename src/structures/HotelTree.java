@@ -5,6 +5,9 @@ import model.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Scanner;
+
+import model.Hotel;
 
 public class HotelTree
 {
@@ -161,4 +164,30 @@ public class HotelTree
         for (Hotel h : cNode.hotels)
             System.out.println("  - " + h.getName());
     }
+
+    public void searchHotelByName(Scanner scanner, HotelTree tree)
+    {
+        System.out.print("\nEnter hotel name to search: ");
+        String hotelName = scanner.nextLine().trim();
+        Hotel hotel = tree.findHotel(hotelName);
+        if (hotel != null) {
+            System.out.println("Hotel found! you searched for : " + hotel.getName() + ", " + hotel.getRegion());
+        } else {
+            System.out.println("Hotel not found.");
+            System.out.println("Returning back to menu...");
+            return;
+        }
+        hotel.printHotelDetails();
+        System.out.print("Would you like to see hotel's reviews? (yes/no) ");
+        String resp = scanner.nextLine().trim();
+        if (resp.equalsIgnoreCase("yes"))
+        {
+            hotel.printReviewList();
+        } else if (resp.equalsIgnoreCase("no")) {
+            System.out.println("Returning to hotel list...");
+        } else {
+            System.out.println("Invalid response. Returning to hotel list...");
+        }
+    }
+
 }
