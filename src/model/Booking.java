@@ -30,11 +30,12 @@ public class Booking
         this.hotel = hotel;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
-        long nights   = ChronoUnit.DAYS.between(checkIn, checkOut);
+        long nights = ChronoUnit.DAYS.between(checkIn, checkOut);
         this.totalPrice = hotel.getPricePerNight() * nights;
     }
 
-    public static Booking create(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut, Payable payer) throws HotelSystemExceptions {
+    public static Booking create(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut, Payable payer) throws HotelSystemExceptions
+    {
 
         Objects.requireNonNull(user);
         Objects.requireNonNull(hotel);
@@ -51,11 +52,12 @@ public class Booking
         user.addBooking(booking);
 
         double total = booking.getTotalPrice();
-        double fee    = payer.calculateFee(total);
-        double baseAmount    = total - fee;
+        double fee = payer.calculateFee(total);
+        double baseAmount = total - fee;
 
         boolean success = payer.processPayment(user, baseAmount);
-        if (!success) {
+        if (!success)
+        {
             booking.cancelBooking();
             return null;
         }
@@ -73,12 +75,34 @@ public class Booking
         return checkOut;
     }
 
-    public long getNights()          { return ChronoUnit.DAYS.between(checkIn, checkOut); }
-    public double getTotalPrice()    { return hotel.getPricePerNight() * getNights(); }
+    public long getNights()
+    {
+        return ChronoUnit.DAYS.between(checkIn, checkOut);
+    }
+
+    public double getTotalPrice()
+    {
+        return hotel.getPricePerNight() * getNights();
+    }
 
     public void setTotalPrice(double totalPrice)
     {
         this.totalPrice = hotel.getPricePerNight() * (checkOut.toEpochDay() - checkIn.toEpochDay());
+    }
+
+    public Hotel getHotel()
+    {
+        return hotel;
+    }
+
+    public User getUser()
+    {
+        return user;
+    }
+
+    public Payable getPayer()
+    {
+        return payer;
     }
 
     public void printBookingDetails()
@@ -96,11 +120,11 @@ public class Booking
     public void cancelBooking()
     {
         hotel.removeBooking(this);
-        user.removeBooking();
     }
 
     //For upcoming bookings method
-    public void printLine() {
+    public void printLine()
+    {
         System.out.printf("%s | %s → %s | ₪%.0f%n", hotel.getName(), checkIn, checkOut, totalPrice);
     }
 }

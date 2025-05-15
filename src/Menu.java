@@ -1,13 +1,22 @@
 import model.*;
+import structures.BookingQueue;
 import structures.HotelTree;
 import structures.UsersList;
 import java.util.Scanner;
 
 public class Menu {
     private static UsersList users = new UsersList();
+    public static void setUsers(UsersList users) {
+        Menu.users = users;
+    }
     private static HotelTree hotelTree;
     public static void setHotelTree(HotelTree tree) {
-        hotelTree = tree;
+        Menu.hotelTree = tree;
+    }
+    private static BookingQueue waitlist;
+    public static void setWaitlist(BookingQueue waitlist) {
+        Menu.waitlist = waitlist;
+        User.setWaitlist(waitlist);
     }
     private static User currentUser;
     public static void main(String[] args) {
@@ -54,6 +63,7 @@ while (true)
             System.out.println("3. Cancel last booking");
             System.out.println("4. View my upcoming bookings");
             System.out.println("5. Leave a review");
+            System.out.println("6. View my Notifications");
             System.out.println("0. Back to main menu");
             System.out.print("Choice: ");
 
@@ -62,7 +72,7 @@ while (true)
 
             switch (userChoice) {
                 case 1:
-                    HotelsView hotelsView = new HotelsView(hotelTree);
+                    HotelsView hotelsView = new HotelsView(hotelTree,waitlist);
                     hotelsView.run(scanner, currentUser);
                     break;
                 case 2:
@@ -80,6 +90,10 @@ while (true)
                 case 5:
                     // write Review
                     currentUser.leaveReview(scanner, hotelTree);
+                    break;
+                case 6:
+                    // view notifications
+                    currentUser.viewNotifications(scanner);
                     break;
                 case 0:
                     System.out.println("Returning to main menu...");

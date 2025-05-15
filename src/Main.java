@@ -11,9 +11,11 @@ public class Main
         UsersList users = new UsersList();
         ReviewList reviewList = new ReviewList();
         BookingList bookings = new BookingList();
+        BookingQueue waitList = new BookingQueue();
+
 
         //North
-        hotelTree.addHotel(new Hotel("The Scots Hotel",Region.NORTH,new Location(Region.NORTH,City.TIBERIAS,"Sea Road 1"),400.0,new Amenities[]{Amenities.POOL,Amenities.WIFI},20,2,4.5,bookings,hotelTree,reviewList));
+        hotelTree.addHotel(new Hotel("The Scots Hotel",Region.NORTH,new Location(Region.NORTH,City.TIBERIAS,"Sea Road 1"),400.0,new Amenities[]{Amenities.POOL,Amenities.WIFI},2,2,4.5,bookings,hotelTree,reviewList));
         hotelTree.addHotel(new Hotel("Leonardo Plaza Hotel Tiberias",Region.NORTH,new Location(Region.NORTH,City.TIBERIAS,"Kinneret St. 5"),450.0,new Amenities[]{Amenities.POOL,Amenities.RESTAURANTS},25,3,4.3,bookings,hotelTree,reviewList));
        //Jerusalem
         hotelTree.addHotel(new Hotel("King David Hotel",Region.JERUSALEM,new Location(Region.JERUSALEM,City.JERUSALEM,"King David 23"),500.0,new Amenities[]{Amenities.PARKING,Amenities.RESTAURANTS},15,2,4.8,bookings,hotelTree,reviewList));
@@ -29,6 +31,9 @@ public class Main
         hotelTree.addHotel(new Tsimmer("Mitzpe Ramon Tsimmer", Region.SOUTH, new Location(Region.SOUTH, City.MITZPE_RAMON, "Desert Path 1"), 250.0, new Amenities[]{Amenities.PARKING}, 3, 2, 4.1, bookings, hotelTree, reviewList, false, true, "Desert"));
 
         Menu.setHotelTree(hotelTree); // set the hotel tree in Menu
+        Menu.setWaitlist(waitList); // set the waitlist in Menu
+        Menu.setUsers(users); // set the users list in Menu
+
         Menu.main(args); // call Menu
 
     }

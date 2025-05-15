@@ -1,5 +1,6 @@
 package model;
 
+import structures.BookingQueue;
 import structures.HotelTree;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -13,8 +14,10 @@ public class HotelsView {
     private final HotelTree tree;
     private Region selectedRegion;
     private User currentUser;
+    private BookingQueue waitlist;
 
-    public HotelsView(HotelTree tree) { this.tree = tree; }
+    public HotelsView(HotelTree tree, BookingQueue waitlist) { this.tree = tree;
+    this.waitlist = waitlist;}
 
     /* ---------------- run ---------------- */
     public void run(Scanner sc, User user) {
@@ -42,8 +45,11 @@ public class HotelsView {
             System.out.println("No hotels/tsimmers match your criteria.");
             return;
         }
-        System.out.println("\n==== Hotels ====");
-        printList(hotels,1);
+        if (!hotels.isEmpty())
+        {
+            System.out.println("\n==== Hotels ====");
+            printList(hotels, 1);
+        }
         if (tsimmers.isEmpty()) {
             System.out.println("No tsimmers match your criteria.");
             return;
@@ -53,25 +59,30 @@ public class HotelsView {
 
             System.out.print("\nSelect hotel/tsimmer to view its details: ");
             int idx = readInt(sc);
-            if (idx < 1 || idx > view.size()) break;
-            Hotel hotel = view.get(idx - 1);
+            if (idx < 1 || idx > hotels.size() + tsimmers.size()) break;
+            Hotel chosen;
+            if (idx <= hotels.size()) {
+                chosen = hotels.get(idx - 1);
+            } else {
+                chosen = tsimmers.get(idx - hotels.size() - 1);
+            }
             System.out.print("\n");
-            hotel.printHotelDetails();
-            System.out.print("Would you like to see hotel's/tsimmer's reviews? (yes/no) ");
+            chosen.printHotelDetails();
+            System.out.print("\nWould you like to see hotel's/tsimmer's reviews? (yes/no) ");
             String resp = sc.nextLine().trim();
             if (resp.equalsIgnoreCase("yes"))
             {
-                hotel.printReviewList();
+                chosen.printReviewList();
             } else if (resp.equalsIgnoreCase("no")) {
             } else {
                 System.out.println("Invalid response. Returning to the options list...");
                 return;
             }
-            System.out.print("\nWould you like to book a reservation? (yes/no) ");
+            System.out.print("Would you like to book a reservation? (yes/no) ");
             String resp1 = sc.nextLine().trim();
             if (resp1.equalsIgnoreCase("yes"))
             {
-                makeBookingFlow(sc, hotel);
+                makeBookingFlow(sc, chosen);
                 break;
             } else if (resp1.equalsIgnoreCase("no")) {
                 System.out.println("Returning to the options list...");
@@ -88,18 +99,34 @@ public class HotelsView {
     private void applyFilters(Scanner sc, List<Hotel> list)
     {
         /* ---------- price ---------- */
-        System.out.print("Max price per night (0 = skip): ");
-        double maxPrice = sc.nextDouble();
-        sc.nextLine();
-        if (maxPrice > 0)
-            list.removeIf(h -> h.getPricePerNight() > maxPrice);
+        double maxPrice;
+        while (true) {
+            System.out.print("Max price per night (0 = skip): ");
+            try {
+                maxPrice = Double.parseDouble(sc.nextLine().trim());
+                if (maxPrice >= 0) break;
+            } catch (NumberFormatException e) { /* fall through */ }
+            System.out.println("Please enter a non-negative number.");
+        }
+        if (maxPrice > 0) {
+            double finalMaxPrice = maxPrice;
+            list.removeIf(h -> h.getPricePerNight() > finalMaxPrice);
+        }
 
         /* ---------- rating ---------- */
-        System.out.print("Min rating (0-5, 0 = skip): ");
-        double minRating = sc.nextDouble();
-        sc.nextLine();
-        if (minRating > 0)
-            list.removeIf(h -> h.getRating() < minRating);
+        double minRating;
+        while (true) {
+            System.out.print("Min rating (0–5, 0 = skip): ");
+            try {
+                minRating = Double.parseDouble(sc.nextLine().trim());
+                if (minRating >= 0 && minRating <= 5) break;
+            } catch (NumberFormatException e) { /* fall through */ }
+            System.out.println("Please enter a number between 0 and 5.");
+        }
+        if (minRating > 0) {
+            double finalMinRating = minRating;
+            list.removeIf(h -> h.getRating() < finalMinRating);
+        }
 
         /* ---------- amenities ---------- */
         Amenities[] all = Amenities.values();
@@ -153,8 +180,13 @@ public class HotelsView {
         while(true)
         {
             String line = sc.nextLine().trim();
-            if (line.equalsIgnoreCase("yes") || line.equalsIgnoreCase("no"))
+            if (line.equalsIgnoreCase("yes")) {
+                list.removeIf(h -> !(h instanceof Tsimmer));
                 break;
+            }
+            if (line.equalsIgnoreCase("no")) {
+                break;
+            }
             System.out.print("Invalid response. Please enter 'yes' or 'no': ");
         }
     }
@@ -198,6 +230,22 @@ public class HotelsView {
             int nights = readInt(sc);
             LocalDate out = in.plusDays(nights);
 
+            if (!hotel.isRoomAvailable(in, out)) {
+                System.out.print("Sorry, the hotel is full for these dates. Would you like to be added to the waitlist? (yes/no) ");
+                String resp = sc.nextLine().trim();
+                if (!resp.equalsIgnoreCase("yes")) {
+                    System.out.println("Booking cancelled.");
+                    return;
+                }
+                System.out.println("You have been added to the waitlist.");
+                BookingQueue.BookingRequest req =
+                        new BookingQueue.BookingRequest(currentUser, hotel, in, out);
+
+                waitlist.enqueue(req);
+                currentUser.addWaitlistNotification(req);
+                return;
+            }
+
             double total = hotel.getPricePerNight() * nights;
             System.out.printf("Amount: ₪%.0f%n", total);
             System.out.println("Select payment method:");
@@ -231,10 +279,12 @@ public class HotelsView {
                 System.out.println("Invalid choice — please select 1 or 2.");
             }
             Booking booking = Booking.create(currentUser, hotel, in, out, payer);
-            System.out.println("Booking confirmed. Thank you!\n");
-
+            if (booking == null) {
+                System.out.println("Payment failed. Reservation not created.");
+            } else {
+                System.out.println("Booking confirmed. Thank you!\n");
+            }
             booking.printBookingDetails();
-
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
