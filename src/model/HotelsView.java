@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.time.YearMonth;
+import java.util.stream.Collectors;
+
 
 public class HotelsView {
 
@@ -31,35 +33,39 @@ public class HotelsView {
         applyFilters(sc, view);
         applySort(sc, view);
 
-        List<Hotel> hotels   = view.stream().filter(h -> !(h instanceof Tsimmer)).toList();
-        List<Hotel> tsimmers = view.stream().filter(h ->  (h instanceof Tsimmer)).toList();
 
+        List<Hotel> hotels = view.stream().filter(h -> !(h instanceof Tsimmer)).collect(Collectors.toCollection(ArrayList::new));
+        List<Hotel> tsimmers = view.stream().filter(h ->   h instanceof Tsimmer).collect(Collectors.toCollection(ArrayList::new));
+        while (true)
+        {
         if (view.isEmpty()) {
             System.out.println("No hotels/tsimmers match your criteria.");
             return;
         }
-        System.out.println("\n--- Hotels ---");
-        printList(hotels);
-        System.out.println("--- Tsimmers ---");
-        printList(tsimmers);
+        System.out.println("\n==== Hotels ====");
+        printList(hotels,1);
+        if (tsimmers.isEmpty()) {
+            System.out.println("No tsimmers match your criteria.");
+            return;
+        }
+        System.out.println("\n==== Tsimmers ====");
+        printList(tsimmers, (hotels.size() + 1));
 
-        while (true)
-        {
-            System.out.println("\n Select hotel/tsimmer to view its details: ");
+            System.out.print("\nSelect hotel/tsimmer to view its details: ");
             int idx = readInt(sc);
             if (idx < 1 || idx > view.size()) break;
             Hotel hotel = view.get(idx - 1);
+            System.out.print("\n");
             hotel.printHotelDetails();
-            System.out.println("Would you like to see hotel's/tsimmer's reviews? (yes/no) ");
+            System.out.print("Would you like to see hotel's/tsimmer's reviews? (yes/no) ");
             String resp = sc.nextLine().trim();
             if (resp.equalsIgnoreCase("yes"))
             {
                 hotel.printReviewList();
             } else if (resp.equalsIgnoreCase("no")) {
-                System.out.println("Returning to the options list...");
-                continue;
             } else {
                 System.out.println("Invalid response. Returning to the options list...");
+                return;
             }
             System.out.print("\nWould you like to book a reservation? (yes/no) ");
             String resp1 = sc.nextLine().trim();
@@ -69,7 +75,6 @@ public class HotelsView {
                 break;
             } else if (resp1.equalsIgnoreCase("no")) {
                 System.out.println("Returning to the options list...");
-                printList(view);
                 continue;
             } else {
                 System.out.println("Invalid response. Returning to the options list...");
@@ -245,18 +250,17 @@ public class HotelsView {
     }
 
     /* ------------- printList -------------- */
-    private void printList(List<Hotel> list) {
-        list.sort(Comparator.comparing((Hotel h) -> h.getLocation().getCity().getDisplayName()).thenComparing(Hotel::getName));
+    private void printList(List<Hotel> list, int startIndex) {
 
         String currentCity = "";
-        int i = 1;
+        int i = startIndex;
 
         for (Hotel h : list) {
             String cityName = h.getLocation().getCity().getDisplayName();
 
             if (!cityName.equals(currentCity)) {
                 currentCity = cityName;
-                System.out.println("\n--- " + currentCity + " ---");
+                System.out.println("--- " + currentCity + " ---");
             }
 
             System.out.printf("%d) %s | ₪%.0f | %.1f★%n",
