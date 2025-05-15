@@ -24,48 +24,55 @@ public class HotelsView {
 
         List<Hotel> view = new ArrayList<>(tree.getHotels(selectedRegion, null));
         if (view.isEmpty()) {
-            System.out.println("No hotels in this region.");
+            System.out.println("No hotels/tsimmers in this region.");
             return;
         }
 
         applyFilters(sc, view);
         applySort(sc, view);
 
+        List<Hotel> hotels   = view.stream().filter(h -> !(h instanceof Tsimmer)).toList();
+        List<Hotel> tsimmers = view.stream().filter(h ->  (h instanceof Tsimmer)).toList();
+
         if (view.isEmpty()) {
-            System.out.println("No hotels match your criteria.");
+            System.out.println("No hotels/tsimmers match your criteria.");
             return;
         }
-        printList(view);
+        System.out.println("\n--- Hotels ---");
+        printList(hotels);
+        System.out.println("--- Tsimmers ---");
+        printList(tsimmers);
+
         while (true)
         {
-            System.out.println("\n Select hotel to view its details: ");
+            System.out.println("\n Select hotel/tsimmer to view its details: ");
             int idx = readInt(sc);
             if (idx < 1 || idx > view.size()) break;
             Hotel hotel = view.get(idx - 1);
             hotel.printHotelDetails();
-            System.out.println("Would you like to see hotel's reviews? (yes/no) ");
+            System.out.println("Would you like to see hotel's/tsimmer's reviews? (yes/no) ");
             String resp = sc.nextLine().trim();
             if (resp.equalsIgnoreCase("yes"))
             {
                 hotel.printReviewList();
             } else if (resp.equalsIgnoreCase("no")) {
-                System.out.println("Returning to hotel list...");
+                System.out.println("Returning to the options list...");
                 continue;
             } else {
-                System.out.println("Invalid response. Returning to hotel list...");
+                System.out.println("Invalid response. Returning to the options list...");
             }
-            System.out.print("\nWould you like to book this hotel? (yes/no) ");
+            System.out.print("\nWould you like to book a reservation? (yes/no) ");
             String resp1 = sc.nextLine().trim();
             if (resp1.equalsIgnoreCase("yes"))
             {
                 makeBookingFlow(sc, hotel);
                 break;
             } else if (resp1.equalsIgnoreCase("no")) {
-                System.out.println("Returning to hotel list...");
+                System.out.println("Returning to the options list...");
                 printList(view);
                 continue;
             } else {
-                System.out.println("Invalid response. Returning to hotel list...");
+                System.out.println("Invalid response. Returning to the options list...");
             }
         }
     }

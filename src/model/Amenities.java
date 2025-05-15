@@ -9,7 +9,8 @@ public enum Amenities {
     POOL("Pool"),
     GYM("Gym"),
     WIFI("WiFi"),
-    PARKING("Parking");
+    PARKING("Parking"),
+    SPA("Spa");
 
 
     private final String displayName;

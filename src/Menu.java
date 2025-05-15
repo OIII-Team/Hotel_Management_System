@@ -5,7 +5,10 @@ import java.util.Scanner;
 
 public class Menu {
     private static UsersList users = new UsersList();
-    private static HotelTree hotelTree = new HotelTree();
+    private static HotelTree hotelTree;
+    public static void setHotelTree(HotelTree tree) {
+        hotelTree = tree;
+    }
     private static User currentUser;
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -125,33 +128,3 @@ while (true)
         }
     }
 }
-
-//System.out.println("Enter hotel details:");
-//                    System.out.print("Name: ");
-//                    String name = scanner.next();
-//                    System.out.print("Region: ");
-//                    Region.printRegionOptions();
-//                    int regionChoice = scanner.nextInt();
-//                    Region selectedRegion = Region.getRegionFromChoice(regionChoice);
-//                    System.out.print("City: ");
-//                    String city = scanner.next();
-//                    System.out.print("Address: ");
-//                    String address = scanner.next();
-//                    System.out.print("Price: ");
-//                    double price = scanner.nextDouble();
-//                    System.out.print("Total Rooms: ");
-//                    int totalRooms = scanner.nextInt();
-//                    System.out.print("Amenities (comma-separated): ");
-//                    String amenitiesInput = scanner.next();
-//                    String[] amenitiesArray = amenitiesInput.split(",");
-//                    Amenities[] amenities = new Amenities[amenitiesArray.length];
-//                    for (int i = 0; i < amenitiesArray.length; i++) {
-//                        amenities[i] = Amenities.fromString(amenitiesArray[i].trim());
-//                    }
-//                    System.out.print("Max Capacity: ");
-//                    int maxCapacity = scanner.nextInt();
-//                    System.out.print("Rating: ");
-//                    double rating = scanner.nextDouble();
-//                    System.out.print("Booking List: ");
-//                    String bookingListInput = scanner.next();
-//                    // Assuming BookingList is a class that can be created from a string

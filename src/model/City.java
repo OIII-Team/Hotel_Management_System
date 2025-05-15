@@ -11,6 +11,7 @@ public enum City
     EILAT        ("Eilat",        Region.SOUTH),
     BEER_SHEVA   ("Beer Sheva",   Region.SOUTH),
     MITZPE_RAMON ("Mitzpe Ramon", Region.SOUTH),
+    DEAD_SEA     ("Dead Sea",     Region.SOUTH),
 
     //Jerusalem
     JERUSALEM    ("Jerusalem",    Region.JERUSALEM),
