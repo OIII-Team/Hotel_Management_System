@@ -300,7 +300,7 @@ public class HotelsView {
     }
 
     /* ------------- printList -------------- */
-    private void printList(List<Hotel> list, int startIndex) {
+    public static void printList(List<Hotel> list, int startIndex) {
 
         String currentCity = "";
         int i = startIndex;

@@ -113,7 +113,6 @@ public class User
 
         newUser.setID(id);
         while (newUser.getID() == null) {
-            System.out.print("Invalid ID. Please re-enter a valid 9-digit ID: ");
             id = scanner.nextLine();
             newUser.setID(id);
         }

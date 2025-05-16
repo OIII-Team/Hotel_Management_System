@@ -55,8 +55,13 @@ public class UsersList
 
     public void printUsers() {
         UserNode current = head;
-        System.out.println("Users List:");
+        System.out.println("\n-- Active Users List: -- ");
+        if (current == null) {
+            System.out.println("No active users found.");
+            return;
+        }
         while (current != null) {
+            System.out.print("\n");
             current.user.PrintUserDetails();
             current = current.next;
         }

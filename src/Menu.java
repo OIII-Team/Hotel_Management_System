@@ -4,6 +4,8 @@ import structures.HotelTree;
 import structures.UsersList;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 public class Menu {
     private static UsersList users = new UsersList();
     public static void setUsers(UsersList users) {
@@ -19,11 +21,15 @@ public class Menu {
         User.setWaitlist(waitlist);
     }
     private static User currentUser;
+    private static Admin admin;
+    public static void setAdmin(Admin admin) {
+        Menu.admin = admin;
+    }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 while (true)
 {
-    System.out.println("\nWelcome to Hotel Management System!");
+    System.out.println("\n=== Welcome to Hotel Management System! ===");
     System.out.println("Please select one of the following options:");
     System.out.println("1. User");
     System.out.println("2. Admin");
@@ -46,7 +52,7 @@ while (true)
         case 3:
             System.out.println("Exiting the system. Goodbye!");
             scanner.close();
-            break;
+            exit(0);
         default:
             System.out.println("Invalid choice. Please try again.");
     }
@@ -120,7 +126,7 @@ while (true)
             switch (adminChoice){
                 case 1:
                     // add hotel
-                    Admin.addHotelInteractive(scanner, hotelTree);
+                    admin.addHotelInteractive(scanner, hotelTree);
                     break;
                 case 2:
                     // remove hotel by name
@@ -128,8 +134,8 @@ while (true)
                     break;
                 case 3:
                     // view hotels by region
-                    System.out.println("Select a region to view hotels:");
-                    Admin.viewHotelsByRegion(hotelTree);
+                    System.out.println("\nSelect a region to view hotels/tsimmers:");
+                    admin.viewHotelsByRegion(hotelTree);
                     break;
                 case 4:
                     users.printUsers();
