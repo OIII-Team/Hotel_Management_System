@@ -21,11 +21,11 @@ public class Hotel
     private BookingList bookings;
     private HotelTree tree;
     private ReviewList reviewList;
-    private boolean[][] availability;
+    private int[][] availability;
 
 
     public Hotel(String name, Region region, Location location, double pricePerNight,
-                 Amenities[] amenities, int totalRooms, int maxCapacity, double rating, boolean[][] availability,
+                 Amenities[] amenities, int totalRooms, int maxCapacity, double rating, int[][] availability,
                  BookingList bookings, HotelTree tree, ReviewList reviewList){
         this.name = name;
         this.region = region;
@@ -36,7 +36,7 @@ public class Hotel
         this.maxCapacity = maxCapacity;
         this.rating = rating;
         int year = LocalDate.now().getYear();
-        this.availability = createDefaultAvailabilityMatrix();
+        this.availability = createDefaultAvailabilityMatrix(totalRooms);
         this.bookings = (bookings != null) ? bookings : new BookingList();
         this.tree = (tree != null) ? tree : new HotelTree();
         this.reviewList = (reviewList != null) ? reviewList : new ReviewList();
@@ -204,44 +204,43 @@ public class Hotel
 
             if (overlap) {
                 overlapping++;
-                if (overlapping > totalRooms)
+                if (overlapping >= totalRooms)
                     return false;
             }
         }
         return true;
     }
 
-    public static boolean[][] createDefaultAvailabilityMatrix() {
+    public static int[][] createDefaultAvailabilityMatrix(int totalRooms) {
         int year = LocalDate.now().getYear();
-        boolean[][] mat = new boolean[12][];
+        int[][] mat = new int[12][];
         for (int m = 1; m <= 12; m++) {
             int days = YearMonth.of(year, m).lengthOfMonth();
-            mat[m-1] = new boolean[days];
-            Arrays.fill(mat[m-1], true);
+            mat[m-1] = new int[days];
+            Arrays.fill(mat[m-1], totalRooms);
         }
         return mat;
     }
 
     public boolean isDateAvailable(LocalDate date) {
-        int m = date.getMonthValue() - 1;
-        int d = date.getDayOfMonth()   - 1;
-        if (m < 0 || m >= availability.length) return false;
-        if (d < 0 || d >= availability[m].length)   return false;
-        return availability[m][d];
+        int m = date.getMonthValue()-1, d = date.getDayOfMonth()-1;
+        return availability[m][d] > 0;
     }
+
 
     public void setDateAvailability(LocalDate date, boolean available) {
         int m = date.getMonthValue() - 1;
         int d = date.getDayOfMonth()   - 1;
         if (m < 0 || m >= availability.length) return;
         if (d < 0 || d >= availability[m].length)   return;
-        availability[m][d] = available;
+        availability[m][d] = available ? totalRooms : 0;
     }
 
     public void updateMatrixForBooking(LocalDate checkIn, LocalDate checkOut) {
         LocalDate d = checkIn;
         while (d.isBefore(checkOut)) {
-            setDateAvailability(d, false);
+            int m = d.getMonthValue()-1, day = d.getDayOfMonth()-1;
+            availability[m][day]--;
             d = d.plusDays(1);
         }
     }
@@ -249,7 +248,8 @@ public class Hotel
     public void updateMatrixForCancellation(LocalDate checkIn, LocalDate checkOut) {
         LocalDate d = checkIn;
         while (d.isBefore(checkOut)) {
-            setDateAvailability(d, true);
+            int m = d.getMonthValue()-1, day = d.getDayOfMonth()-1;
+            availability[m][day]++;
             d = d.plusDays(1);
         }
     }
@@ -258,7 +258,7 @@ public class Hotel
         String[] months = { "Jan","Feb","Mar","Apr","May","Jun",
                 "Jul","Aug","Sep","Oct","Nov","Dec" };
         int mIndex = month - 1;
-        boolean[] days = availability[mIndex];
+        int[] days = availability[mIndex];
         int totalDays = days.length;
         int rows = 4;
         int perRow = (int) Math.ceil(totalDays / (double) rows);
@@ -278,7 +278,7 @@ public class Hotel
 
             System.out.print("Status  ");
             for (int i = start; i < end; i++) {
-                System.out.printf("%3s", days[i] ? "✓" : "✗");
+                System.out.printf("%3s", days[i] > 0 ? "✓" : "✗");
             }
             System.out.println("");
         }

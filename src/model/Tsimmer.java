@@ -11,7 +11,7 @@ public class Tsimmer extends Hotel
     public String viewType;
 
     public Tsimmer(String name, Region region, Location location, double pricePerNight, Amenities[] amenities, int totalRooms,
-                   int maxCapacity, double rating, boolean[][] availability, BookingList bookings, HotelTree tree,
+                   int maxCapacity, double rating, int[][] availability, BookingList bookings, HotelTree tree,
                    ReviewList reviewList, boolean isFamilyFriendly, boolean isAllowPets, String viewType) {
         super(name, region, location, pricePerNight, amenities, totalRooms, maxCapacity, rating,availability, bookings, tree,reviewList);
         this.isFamilyFriendly = isFamilyFriendly;
