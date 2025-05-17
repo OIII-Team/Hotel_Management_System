@@ -211,41 +211,51 @@ public class HotelsView {
         try {
             LocalDate today = LocalDate.now();
             LocalDate in;
-            while (true) {
-                System.out.print("Check-in (yyyy-MM-dd): ");
-                String line = sc.nextLine().trim();
-                try {
-                    in = LocalDate.parse(line);
-                } catch (DateTimeParseException e) {
-                    System.out.println("Invalid date format or out‐of‐range values. Try again: ");
-                    continue;
-                }
-                if (in.isBefore(today)) {
-                    System.out.println("Date is in the past. Please choose a future date.");
-                    continue;
-                }
-                break;
-            }
-            System.out.print("Nights: ");
-            int nights = readInt(sc);
-            LocalDate out = in.plusDays(nights);
+            int nights;
+            LocalDate out;
 
-            if (!hotel.isRoomAvailable(in, out)) {
-                System.out.print("Sorry, the hotel is full for these dates. Would you like to be added to the waitlist? (yes/no) ");
-                String resp = sc.nextLine().trim();
-                if (!resp.equalsIgnoreCase("yes")) {
+            while (true) {
+                while (true) {
+                    System.out.print("Check-in (yyyy-MM-dd): ");
+                    String line = sc.nextLine().trim();
+                    try {
+                        in = LocalDate.parse(line);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Invalid date format or out-of-range. Try again.");
+                        continue;
+                    }
+                    if (in.isBefore(today)) {
+                        System.out.println("Date is in the past. Please choose a future date.");
+                        continue;
+                    }
+                    break;
+                }
+
+                System.out.print("Nights: ");
+                nights = readInt(sc);
+                out = in.plusDays(nights);
+
+                if (!hotel.isRoomAvailable(in, out)) {
+                    System.out.println("Sorry, the hotel is full for these dates.");
+                    hotel.displayAvailabilityMatrix(in.getYear(), in.getMonthValue());
+                    System.out.print("Would you like to pick a different check-in date? (yes to retry / no to join waitlist): ");
+                    String resp = sc.nextLine().trim();
+                    if (resp.equalsIgnoreCase("yes")) {
+                        continue;
+                    }
+                    if (resp.equalsIgnoreCase("no")) {
+                        System.out.println("You have been added to the waitlist.");
+                        BookingQueue.BookingRequest req =
+                                new BookingQueue.BookingRequest(currentUser, hotel, in, out);
+                        waitlist.enqueue(req);
+                        currentUser.addWaitlistNotification(req);
+                        return;
+                    }
                     System.out.println("Booking cancelled.");
                     return;
                 }
-                System.out.println("You have been added to the waitlist.");
-                BookingQueue.BookingRequest req =
-                        new BookingQueue.BookingRequest(currentUser, hotel, in, out);
-
-                waitlist.enqueue(req);
-                currentUser.addWaitlistNotification(req);
-                return;
+                break;
             }
-
             double total = hotel.getPricePerNight() * nights;
             System.out.printf("Amount: ₪%.0f%n", total);
             System.out.println("Select payment method:");
@@ -253,11 +263,14 @@ public class HotelsView {
             System.out.println("2) PayPal");
 
             Payable payer;
+            String cardNum = "";
+            String email = "";
+            String paymentRef = "";
             while (true) {
                 int choice = readInt(sc);
                 if (choice == 1) {
                     System.out.print("Card Number (16 digits): ");
-                    String cardNum = sc.nextLine().trim();
+                    cardNum = sc.nextLine().trim();
                     System.out.print("CVV (3 digits): ");
                     String cvv = sc.nextLine().trim();
                     System.out.print("Expiry (MM/yyyy): ");
@@ -265,26 +278,43 @@ public class HotelsView {
                     YearMonth exp = YearMonth.of(
                             Integer.parseInt(parts[1].trim()),
                             Integer.parseInt(parts[0].trim()));
-                    payer = new CreditCardPayment(total,today, cardNum, cvv, exp);
+                    payer = new CreditCardPayment(total, today, cardNum, cvv, exp);
+                    paymentRef = cardNum.length() > 4
+                            ? cardNum.substring(cardNum.length() - 4)
+                            : cardNum;
                     break;
                 }
                 if (choice == 2) {
                     System.out.print("PayPal Email: ");
-                    String email = sc.nextLine().trim();
+                    email = sc.nextLine().trim();
                     System.out.print("PayPal Account ID for confirmation: ");
                     String id = sc.nextLine().trim();
-                    payer = new PaypalPayment(total,today, email, id);
+                    payer = new PaypalPayment(total, today, email, id);
+                    int at = email.indexOf('@');
+                    paymentRef = email.substring(0, Math.min(at, 4));
                     break;
                 }
                 System.out.println("Invalid choice — please select 1 or 2.");
             }
+
             Booking booking = Booking.create(currentUser, hotel, in, out, payer);
             if (booking == null) {
                 System.out.println("Payment failed. Reservation not created.");
-            } else {
-                System.out.println("Booking confirmed. Thank you!\n");
+                return;
             }
+            hotel.updateMatrixForBooking(in, out);
+            System.out.println("\nBooking confirmed.");
+            if (payer instanceof CreditCardPayment) {
+                System.out.println("Credit card ends with: XXXX-XXXX-XXXX-" + paymentRef);
+            } else {
+                String domain = currentUser.getEmail()
+                        .substring(currentUser.getEmail().indexOf('@'));
+                System.out.println("PayPal account ref : " + paymentRef + "XX@" + email.substring(email.indexOf('@')));
+            }
+            System.out.println("Thank you! See you soon :)\n");
+
             booking.printBookingDetails();
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -319,7 +349,13 @@ public class HotelsView {
     }
 
     private int readInt(Scanner sc) {
-        int v = sc.nextInt(); sc.nextLine();
-        return v;
+        while (true) {
+            String line = sc.nextLine().trim();
+            try {
+                return Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a whole number: ");
+            }
+        }
     }
 }

@@ -3,6 +3,9 @@ import structures.BookingList;
 import structures.HotelTree;
 import structures.ReviewList;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Arrays;
+import java.util.Scanner;
 
 
 public class Hotel
@@ -18,10 +21,12 @@ public class Hotel
     private BookingList bookings;
     private HotelTree tree;
     private ReviewList reviewList;
+    private boolean[][] availability;
 
 
     public Hotel(String name, Region region, Location location, double pricePerNight,
-                 Amenities[] amenities, int totalRooms, int maxCapacity, double rating, BookingList bookings, HotelTree tree, ReviewList reviewList){
+                 Amenities[] amenities, int totalRooms, int maxCapacity, double rating, boolean[][] availability,
+                 BookingList bookings, HotelTree tree, ReviewList reviewList){
         this.name = name;
         this.region = region;
         this.location = location;
@@ -30,6 +35,8 @@ public class Hotel
         this.totalRooms = totalRooms;
         this.maxCapacity = maxCapacity;
         this.rating = rating;
+        int year = LocalDate.now().getYear();
+        this.availability = createDefaultAvailabilityMatrix();
         this.bookings = (bookings != null) ? bookings : new BookingList();
         this.tree = (tree != null) ? tree : new HotelTree();
         this.reviewList = (reviewList != null) ? reviewList : new ReviewList();
@@ -203,6 +210,80 @@ public class Hotel
         }
         return true;
     }
+
+    public static boolean[][] createDefaultAvailabilityMatrix() {
+        int year = LocalDate.now().getYear();
+        boolean[][] mat = new boolean[12][];
+        for (int m = 1; m <= 12; m++) {
+            int days = YearMonth.of(year, m).lengthOfMonth();
+            mat[m-1] = new boolean[days];
+            Arrays.fill(mat[m-1], true);
+        }
+        return mat;
+    }
+
+    public boolean isDateAvailable(LocalDate date) {
+        int m = date.getMonthValue() - 1;
+        int d = date.getDayOfMonth()   - 1;
+        if (m < 0 || m >= availability.length) return false;
+        if (d < 0 || d >= availability[m].length)   return false;
+        return availability[m][d];
+    }
+
+    public void setDateAvailability(LocalDate date, boolean available) {
+        int m = date.getMonthValue() - 1;
+        int d = date.getDayOfMonth()   - 1;
+        if (m < 0 || m >= availability.length) return;
+        if (d < 0 || d >= availability[m].length)   return;
+        availability[m][d] = available;
+    }
+
+    public void updateMatrixForBooking(LocalDate checkIn, LocalDate checkOut) {
+        LocalDate d = checkIn;
+        while (d.isBefore(checkOut)) {
+            setDateAvailability(d, false);
+            d = d.plusDays(1);
+        }
+    }
+
+    public void updateMatrixForCancellation(LocalDate checkIn, LocalDate checkOut) {
+        LocalDate d = checkIn;
+        while (d.isBefore(checkOut)) {
+            setDateAvailability(d, true);
+            d = d.plusDays(1);
+        }
+    }
+
+    public void displayAvailabilityMatrix(int year, int month) {
+        String[] months = { "Jan","Feb","Mar","Apr","May","Jun",
+                "Jul","Aug","Sep","Oct","Nov","Dec" };
+        int mIndex = month - 1;
+        boolean[] days = availability[mIndex];
+        int totalDays = days.length;
+        int rows = 4;
+        int perRow = (int) Math.ceil(totalDays / (double) rows);
+
+        System.out.printf("\nAvailability for %s %d:%n%n", months[mIndex], year);
+
+        for (int r = 0; r < rows; r++) {
+            int start = r * perRow;
+            if (start >= totalDays) break;
+            int end = Math.min(start + perRow, totalDays);
+
+            System.out.print("Day      ");
+            for (int d = start + 1; d <= end; d++) {
+                System.out.printf("%3d", d);
+            }
+            System.out.println();
+
+            System.out.print("Status  ");
+            for (int i = start; i < end; i++) {
+                System.out.printf("%3s", days[i] ? "✓" : "✗");
+            }
+            System.out.println("");
+        }
+    }
+
 
     public void printHotelDetails()
     {

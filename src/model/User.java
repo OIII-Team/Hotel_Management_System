@@ -162,6 +162,7 @@ public class User
         last.cancelBooking();
         bookingStack.pop();
         last.getHotel().removeBooking(last);
+        last.getHotel().updateMatrixForCancellation(last.getCheckIn(), last.getCheckOut());
         System.out.println("Booking cancelled.");
 
 
@@ -184,6 +185,7 @@ public class User
     }
 
     public void addBooking(Booking b)            { bookingStack.push(b); }
+
     public void removeBooking()            { bookingStack.pop(); }
 
     public void leaveReview(Scanner sc, HotelTree tree) {
@@ -229,6 +231,8 @@ public class User
     }
 
     //BookingQueue methods - notification center for the user
+    private final List<BookingQueue.BookingRequest> waitlistNotifications = new ArrayList<>();
+
     public static void setWaitlist(BookingQueue waitlist)
     {
         User.waitlist = waitlist;
@@ -238,16 +242,16 @@ public class User
         waitlistNotifications.remove(req);
     }
 
-    private final List<BookingQueue.BookingRequest> waitlistNotifications = new ArrayList<>();
-
     public void addWaitlistNotification(BookingQueue.BookingRequest req) {
         waitlistNotifications.add(req);
     }
+
     public void viewNotifications(Scanner sc) {
         if (waitlistNotifications.isEmpty()) {
             System.out.println("You have no notifications.");
             return;
         }
+
         Iterator<BookingQueue.BookingRequest> it = waitlistNotifications.iterator();
         while (it.hasNext()) {
             BookingQueue.BookingRequest req = it.next();
@@ -255,47 +259,71 @@ public class User
             LocalDate in = req.getCheckIn();
             LocalDate out = req.getCheckOut();
             System.out.printf("%s: %s → %s%n", hotel.getName(), in, out);
+
             if (hotel.isRoomAvailable(in, out)) {
                 System.out.print("Room is available! Complete payment and book? (yes/no): ");
                 String resp = sc.nextLine().trim();
-                if (resp.equalsIgnoreCase("yes")) {
-                    double amount = hotel.getPricePerNight() * ChronoUnit.DAYS.between(in, out);
-                    Payable payer = null;
-                    while (payer == null) {
-                        System.out.println("Select payment method:");
-                        System.out.println("1) Credit Card");
-                        System.out.println("2) PayPal");
-                        String choice = sc.nextLine().trim();
-                        if (choice.equals("1")) {
-                            System.out.print("Card Number (16 digits): ");
-                            String cardNum = sc.nextLine().trim();
-                            System.out.print("CVV (3 digits): ");
-                            String cvv = sc.nextLine().trim();
-                            System.out.print("Expiry (MM/yyyy): ");
-                            String[] parts = sc.nextLine().split("/");
-                            YearMonth exp = YearMonth.of(
-                                    Integer.parseInt(parts[1].trim()),
-                                    Integer.parseInt(parts[0].trim()));
-                            payer = new CreditCardPayment(amount, LocalDate.now(), cardNum, cvv, exp);
-                        } else if (choice.equals("2")) {
-                            System.out.print("PayPal Email: ");
-                            String email = sc.nextLine().trim();
-                            System.out.print("PayPal Account ID for confirmation: ");
-                            String id = sc.nextLine().trim();
-                            payer = new PaypalPayment(amount, LocalDate.now(), email, id);
-                        } else {
-                            System.out.println("Invalid choice. Try again.");
-                        }
-                    }
-                    if (payer.processPayment(this, amount)) {
-                        Booking b = Booking.create(this, hotel, in, out, payer);
-                        System.out.println("Booking confirmed!\n");
-                        b.printBookingDetails();
-                        it.remove();
+                if (!resp.equalsIgnoreCase("yes")) {
+                    System.out.println("OK, your booking request is cancelled.");
+                    it.remove();
+                    req.getUser().removeWaitlistNotification(req);
+                    continue;
+                }
+
+                double amount = hotel.getPricePerNight() * ChronoUnit.DAYS.between(in, out);
+                Payable payer;
+                String paymentRef = "";
+                while (true) {
+                    System.out.println("Select payment method:");
+                    System.out.println("1) Credit Card");
+                    System.out.println("2) PayPal");
+                    String choice = sc.nextLine().trim();
+
+                    if (choice.equals("1")) {
+                        System.out.print("Card Number (16 digits): ");
+                        String cardNum = sc.nextLine().trim();
+                        System.out.print("CVV (3 digits): ");
+                        String cvv = sc.nextLine().trim();
+                        System.out.print("Expiry (MM/yyyy): ");
+                        String[] parts = sc.nextLine().split("/");
+                        YearMonth exp = YearMonth.of(
+                                Integer.parseInt(parts[1].trim()),
+                                Integer.parseInt(parts[0].trim())
+                        );
+                        payer = new CreditCardPayment(amount, LocalDate.now(), cardNum, cvv, exp);
+                        paymentRef = cardNum.length() > 4 ? cardNum.substring(cardNum.length() - 4) : cardNum;
+                        break;
+                    } else if (choice.equals("2")) {
+                        System.out.print("PayPal Email: ");
+                        String email = sc.nextLine().trim();
+                        System.out.print("PayPal Account ID for confirmation: ");
+                        String id = sc.nextLine().trim();
+                        payer = new PaypalPayment(amount, LocalDate.now(), email, id);
+                        int at = email.indexOf('@');
+                        paymentRef = email.substring(0, Math.min(at, 4));
+                        break;
                     } else {
-                        System.out.println("Payment failed. You remain on the waitlist.");
+                        System.out.println("Invalid choice — please select 1 or 2.");
                     }
                 }
+
+                Booking booking = Booking.create(this, hotel, in, out, payer);
+                req.getUser().removeWaitlistNotification(req);
+                booking.getHotel().updateMatrixForBooking(in, out);
+                if (booking == null) {
+                    System.out.println("Payment failed. You remain on the waitlist.");
+                    continue;
+                }
+                System.out.println("\nBooking confirmed.");
+                if (payer instanceof CreditCardPayment) {
+                    System.out.println("Credit card ends with : XXXX-XXXX-XXXX-" + paymentRef);
+                } else if (payer instanceof PaypalPayment) {
+                    System.out.println("PayPal account ref : " + paymentRef + "XX@" + email.substring(email.indexOf('@')));
+                }
+                System.out.println("Thank you! see you soon :)\n");
+
+                booking.printBookingDetails();
+                it.remove();
             } else {
                 System.out.println("-> Still waiting for availability.");
             }
