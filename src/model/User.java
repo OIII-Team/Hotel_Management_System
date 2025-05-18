@@ -15,11 +15,11 @@ import java.util.Scanner;
 
 public class User
 {
-    public String name;
-    private String email;
-    private String ID;
-    public UsersBookingStack bookingStack;
-    public UsersList Users;
+    protected String name;
+    protected String email;
+    protected String ID;
+    private UsersBookingStack bookingStack;
+    private UsersList Users;
     private static BookingQueue waitlist;
 
     public User(String name, String email, String ID)

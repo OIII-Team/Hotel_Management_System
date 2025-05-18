@@ -88,7 +88,7 @@ public class HotelTree
         }
     }
 
-    /// Helper classes
+    // Nested classes for region and city nodes
     private static class RegionNode {
         final Region region;
         final List<CityNode> cities = new ArrayList<>();

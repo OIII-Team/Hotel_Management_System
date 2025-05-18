@@ -34,7 +34,7 @@ public class Main
 
         Menu.setHotelTree(hotelTree); // set the hotel tree in Menu
         Menu.setWaitlist(waitList); // set the waitlist in Menu
-        Menu.setUsers(users); // set the users list in Menu
+        Menu.setUsers(users); // set the user's list in Menu
         Menu.setAdmin(admin); // set the admin in Menu
         Menu.main(args); // call Menu
 

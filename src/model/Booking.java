@@ -6,10 +6,10 @@ import java.util.Objects;
 
 public class Booking
 {
-    public User user;
-    public Hotel hotel;
-    public LocalDate checkIn;
-    public LocalDate checkOut;
+    protected User user;
+    protected Hotel hotel;
+    protected LocalDate checkIn;
+    protected LocalDate checkOut;
     private double totalPrice;
     protected Payable payer;
 
@@ -19,7 +19,7 @@ public class Booking
         Objects.requireNonNull(user);
         Objects.requireNonNull(hotel);
         if (!hotel.isRoomAvailable(checkIn, checkOut))
-        throw new IllegalArgumentException("No rooms available in " + hotel.getName());
+            throw new IllegalArgumentException("No rooms available in " + hotel.getName());
         if (checkIn.isBefore(today))
             throw new IllegalArgumentException("Check-in date cannot be in the past");
         if (!checkOut.isAfter(checkIn))
@@ -124,7 +124,7 @@ public class Booking
         hotel.removeBooking(this);
     }
 
-    //For upcoming bookings method
+    //For upcoming bookings method in User
     public void printLine()
     {
         System.out.printf("%s | %s → %s | ₪%.0f%n", hotel.getName(), checkIn, checkOut, totalPrice);

@@ -8,7 +8,7 @@ public class Tsimmer extends Hotel
 {
     private boolean isFamilyFriendly;
     private boolean isAllowPets;
-    public String viewType;
+    private String viewType;
 
     public Tsimmer(String name, Region region, Location location, double pricePerNight, Amenities[] amenities, int totalRooms,
                    int maxCapacity, double rating, int[][] availability, BookingList bookings, HotelTree tree,

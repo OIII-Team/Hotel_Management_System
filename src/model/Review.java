@@ -1,9 +1,6 @@
 package model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import model.User;
-import model.Hotel;
 import structures.ReviewList;
 
 

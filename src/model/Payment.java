@@ -7,7 +7,7 @@ import exceptions.HotelSystemPaymentExceptions;
 public abstract class Payment implements Payable
 {
     private double amount;
-    public LocalDate paymentDate;
+    protected LocalDate paymentDate;
 
     public Payment(double amount, LocalDate paymentDate) throws HotelSystemPaymentExceptions
     {
@@ -20,6 +20,11 @@ public abstract class Payment implements Payable
     public double getAmount()
     {
         return amount;
+    }
+
+    public LocalDate getPaymentDate()
+    {
+        return paymentDate;
     }
 
     public double calculateFee(double amount)

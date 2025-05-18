@@ -11,10 +11,10 @@ import java.util.Scanner;
 public class Hotel
 {
     private String name;
-    public Region region;
+    protected Region region;
     private double pricePerNight;
-    public Amenities[] amenities;
-    public Location location;
+    protected Amenities[] amenities;
+    protected Location location;
     private int totalRooms;
     private int maxCapacity; //Each room
     private double rating;

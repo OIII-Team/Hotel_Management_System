@@ -86,7 +86,7 @@ while (true)
                     hotelTree.searchHotelByName(scanner, hotelTree);
                     break;
                 case 3:
-                    // pop from BookingStack
+                    // pop from BookingStack - cancel last booking
                     currentUser.cancelLastBooking(scanner);
                     break;
                 case 4:
@@ -130,7 +130,7 @@ while (true)
                     break;
                 case 2:
                     // remove hotel by name
-                    Admin.removeHotelInteractive(scanner, hotelTree);
+                    admin.removeHotelInteractive(scanner, hotelTree);
                     break;
                 case 3:
                     // view hotels by region
@@ -138,6 +138,7 @@ while (true)
                     admin.viewHotelsByRegion(hotelTree);
                     break;
                 case 4:
+                    // view all users
                     users.printUsers();
                     break;
                 case 0:

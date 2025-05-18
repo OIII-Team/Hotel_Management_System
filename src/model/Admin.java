@@ -13,7 +13,7 @@ public class Admin extends User
 
     public Admin(String name, String email, String ID, String password)
     {
-        super(name, email, ID); // Constructor of User class - super is used to call the constructor of the parent class!
+        super(name, email, ID);
         this.password = "123456789";
     }
 
@@ -28,8 +28,15 @@ public class Admin extends User
         System.out.println("\nWelcome to the Admin Login Page!");
         System.out.print("Enter admin password: ");
         String inputPassword = scanner.nextLine();
+        String correct = "123456789";
 
-        if (inputPassword.equals("123456789"))
+        boolean match = inputPassword.length() == correct.length();
+        for (int i = 0; match && i < correct.length(); i++) {
+            if (inputPassword.charAt(i) != correct.charAt(i)) {
+                match = false;
+            }
+        }
+        if (match)
         {
             System.out.println("Login successful!");
             return new Admin(inputPassword);
@@ -40,14 +47,13 @@ public class Admin extends User
         }
     }
 
-    public static void addHotelInteractive(Scanner sc, HotelTree tree)
+    public void addHotelInteractive(Scanner sc, HotelTree tree)
     {
 
         System.out.println("--Add New Hotel--");
         sc.nextLine();
         System.out.print("Name: ");
         String name = sc.nextLine();
-
 
         //Region
         Region selectedRegion = null;
@@ -109,7 +115,7 @@ public class Admin extends User
         System.out.println("Hotel \"" + name + "\" added.");
     }
 
-    public static void removeHotelInteractive(Scanner sc, HotelTree tree)
+    public void removeHotelInteractive(Scanner sc, HotelTree tree)
     {
         System.out.println("\n--Remove Hotel--");
         sc.nextLine();
