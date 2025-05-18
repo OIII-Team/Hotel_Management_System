@@ -200,11 +200,12 @@ public class Hotel
         int overlapping = 0;
 
         for (Booking b : bookings.asList()) {
-            boolean overlap = !b.getCheckOut().isBefore(checkIn) && !checkOut.isBefore(b.getCheckIn());
+            boolean overlap = checkIn.isBefore(b.getCheckOut())
+                    && b.getCheckIn().isBefore(checkOut);
 
             if (overlap) {
                 overlapping++;
-                if (overlapping >= totalRooms)
+                if (overlapping > totalRooms)
                     return false;
             }
         }

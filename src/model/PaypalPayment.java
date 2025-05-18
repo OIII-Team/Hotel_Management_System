@@ -53,5 +53,9 @@ public class PaypalPayment extends Payment
         }
         return false;
     }
+
+    public String getPayerEmail() {
+        return payerEmail;
+    }
 }
 

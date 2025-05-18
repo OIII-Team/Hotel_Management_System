@@ -10,7 +10,30 @@ public class HotelSystemExceptions extends RuntimeException {
         super(message);
     }
 
-    public HotelSystemExceptions(String message, Throwable cause) {
-        super(message, cause);
+    public static class InvalidCardNumberException extends HotelSystemExceptions {
+        public InvalidCardNumberException() { super("Invalid credit card number."); }
     }
+
+    public static class InvalidCVVException extends HotelSystemExceptions {
+        public InvalidCVVException() { super("Invalid CVV."); }
+    }
+
+    public static class DateException extends HotelSystemExceptions {
+        private DateException(String message) {
+            super(message);
+        }
+
+        public static class InvalidFormatException extends DateException {
+            public InvalidFormatException() {
+                super("Invalid date format. Please use MM/yyyy.");
+            }
+        }
+
+        public static class ExpiredException extends DateException {
+            public ExpiredException() {
+                super("Card expired!");
+            }
+        }
+    }
+
 }
