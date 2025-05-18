@@ -2,17 +2,17 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import exceptions.HotelSystemExceptions;
+import exceptions.HotelSystemPaymentExceptions;
 
 public abstract class Payment implements Payable
 {
     private double amount;
     public LocalDate paymentDate;
 
-    public Payment(double amount, LocalDate paymentDate) throws HotelSystemExceptions
+    public Payment(double amount, LocalDate paymentDate) throws HotelSystemPaymentExceptions
     {
         if (amount <= 0)
-            throw new HotelSystemExceptions("Amount must be greater than zero");
+            throw new HotelSystemPaymentExceptions("Amount must be greater than zero");
         this.amount = amount;
         this.paymentDate = LocalDateTime.now().toLocalDate();
     }
@@ -25,11 +25,11 @@ public abstract class Payment implements Payable
     public double calculateFee(double amount)
     {
         if (amount != this.amount)
-            throw new HotelSystemExceptions("Amount does not match the payment amount");
+            throw new HotelSystemPaymentExceptions("Amount does not match the payment amount");
         return amount * 0.025;
     }
 
     public abstract boolean processPayment(User user, double netAmount);
-    protected abstract void validatePayment() throws HotelSystemExceptions;
+    protected abstract void validatePayment() throws HotelSystemPaymentExceptions;
 
 }

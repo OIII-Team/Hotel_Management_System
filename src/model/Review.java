@@ -45,10 +45,11 @@ public class Review
     public void printReview()
     {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy, HH:mm");
-        System.out.println("Review by " + authorName.getName() + " for " + getHotelName());
+        System.out.println("\nReview by " + authorName.getName() + " for " + getHotelName());
         System.out.println("Rating: " + rating);
         System.out.println("Comment: " + comment);
         System.out.println("Date: " + commentDate.format(fmt));
+        System.out.print("\n");
     }
 
     public ReviewList addReviewToList(Review review)

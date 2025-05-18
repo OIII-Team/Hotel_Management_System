@@ -184,9 +184,9 @@ public class User
         }
     }
 
-    public void addBooking(Booking b)            { bookingStack.push(b); }
+    public void addBooking(Booking b) { bookingStack.push(b); }
 
-    public void removeBooking()            { bookingStack.pop(); }
+    public void removeBooking() { bookingStack.pop(); }
 
     public void leaveReview(Scanner sc, HotelTree tree) {
         System.out.print("Enter hotel name to review: ");

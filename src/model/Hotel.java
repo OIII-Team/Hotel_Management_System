@@ -205,7 +205,7 @@ public class Hotel
 
             if (overlap) {
                 overlapping++;
-                if (overlapping > totalRooms)
+                if (overlapping >= totalRooms)
                     return false;
             }
         }

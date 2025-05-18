@@ -1,5 +1,5 @@
 package model;
-import exceptions.HotelSystemExceptions;
+import exceptions.HotelSystemPaymentExceptions;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -17,15 +17,16 @@ public class CreditCardPayment extends Payment
         this.expirationDate = expirationDate;
     }
 
-    public void validatePayment() throws HotelSystemExceptions {
+    public void validatePayment() throws HotelSystemPaymentExceptions
+    {
         if (!cardNumber.matches("\\d{16}"))
-            throw new HotelSystemExceptions.InvalidCardNumberException();
+            throw new HotelSystemPaymentExceptions.InvalidCardNumberException();
         if (!cvv.matches("\\d{3}"))
-            throw new HotelSystemExceptions.InvalidCVVException();
+            throw new HotelSystemPaymentExceptions.InvalidCVVException();
         if (!expirationDate.toString().matches("\\d{4}-\\d{2}"))
-            throw new HotelSystemExceptions.DateException.InvalidFormatException();
+            throw new HotelSystemPaymentExceptions.DateException.InvalidFormatException();
         if (expirationDate.isBefore(YearMonth.now()))
-            throw new HotelSystemExceptions.DateException.ExpiredException();
+            throw new HotelSystemPaymentExceptions.DateException.ExpiredException();
     }
 
     public boolean processPayment(User user, double netAmount)
@@ -40,17 +41,17 @@ public class CreditCardPayment extends Payment
             {
                 validatePayment();
                 return true;
-            } catch (HotelSystemExceptions.InvalidCardNumberException ex)
+            } catch (HotelSystemPaymentExceptions.InvalidCardNumberException ex)
             {
                 System.out.println(ex.getMessage());
                 System.out.print("Re-enter Card Number: ");
                 cardNumber = sc.nextLine().trim();
-            } catch (HotelSystemExceptions.InvalidCVVException ex)
+            } catch (HotelSystemPaymentExceptions.InvalidCVVException ex)
             {
                 System.out.println(ex.getMessage());
                 System.out.print("Re-enter CVV: ");
                 cvv = sc.nextLine().trim();
-            } catch (HotelSystemExceptions.DateException.InvalidFormatException ex)
+            } catch (HotelSystemPaymentExceptions.DateException.InvalidFormatException ex)
             {
                 System.out.println(ex.getMessage());
                 while (true)
@@ -78,7 +79,7 @@ public class CreditCardPayment extends Payment
                         System.out.println(ex.getMessage());
                     }
                 }
-            } catch (HotelSystemExceptions.DateException.ExpiredException ex)
+            } catch (HotelSystemPaymentExceptions.DateException.ExpiredException ex)
             {
                 System.out.println(ex.getMessage());
                 while (true)
@@ -87,7 +88,7 @@ public class CreditCardPayment extends Payment
                     String[] parts = sc.nextLine().trim().split("/");
                     if (parts.length != 2)
                     {
-                        System.out.println(new HotelSystemExceptions.DateException.InvalidFormatException().getMessage());
+                        System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
                         continue;
                     }
                     try
@@ -96,7 +97,7 @@ public class CreditCardPayment extends Payment
                         int y = Integer.parseInt(parts[1].trim());
                         if (m < 1 || m > 12)
                         {
-                            System.out.println(new HotelSystemExceptions.DateException.InvalidFormatException().getMessage());
+                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
                             continue;
                         }
                         YearMonth candidate = YearMonth.of(y, m);
@@ -109,7 +110,7 @@ public class CreditCardPayment extends Payment
                         break;
                     } catch (NumberFormatException e)
                     {
-                        System.out.println(new HotelSystemExceptions.DateException.InvalidFormatException().getMessage());
+                        System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
                     }
                 }
             }

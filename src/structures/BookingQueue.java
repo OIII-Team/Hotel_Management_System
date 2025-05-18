@@ -1,6 +1,6 @@
 package structures;
 
-import exceptions.HotelSystemExceptions;
+import exceptions.HotelSystemPaymentExceptions;
 import model.Booking;
 import model.User;
 import model.Hotel;
@@ -29,7 +29,8 @@ public class BookingQueue {
         public LocalDate getCheckIn() { return checkIn; }
         public LocalDate getCheckOut() { return checkOut; }
 
-        public boolean tryExecute() throws HotelSystemExceptions {
+        public boolean tryExecute() throws HotelSystemPaymentExceptions
+        {
             if (!hotel.isRoomAvailable(checkIn, checkOut)) {
                 return false;
             }
@@ -43,8 +44,9 @@ public class BookingQueue {
 
     private final Queue<BookingRequest> queue = new LinkedList<>();
 
-    public void enqueue(BookingRequest request) throws HotelSystemExceptions {
-        if (request == null) throw new HotelSystemExceptions("Request cannot be null");
+    public void enqueue(BookingRequest request) throws HotelSystemPaymentExceptions
+    {
+        if (request == null) throw new HotelSystemPaymentExceptions("Request cannot be null");
         queue.offer(request);
     }
 
@@ -56,7 +58,7 @@ public class BookingQueue {
             if (!success) {
                 queue.offer(req);
             }
-        } catch (HotelSystemExceptions ex) {
+        } catch (HotelSystemPaymentExceptions ex) {
         }
     }
 

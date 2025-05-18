@@ -3,7 +3,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import exceptions.HotelSystemExceptions;
 
 public class Booking
 {
@@ -14,18 +13,17 @@ public class Booking
     private double totalPrice;
     protected Payable payer;
 
-    public Booking(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut) throws HotelSystemExceptions
+    public Booking(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut)
     {
         LocalDate today = LocalDate.now();
         Objects.requireNonNull(user);
         Objects.requireNonNull(hotel);
         if (!hotel.isRoomAvailable(checkIn, checkOut))
-            throw new HotelSystemExceptions("No rooms available in " + hotel.getName());
-        hotel.addBooking(this);
+        throw new IllegalArgumentException("No rooms available in " + hotel.getName());
         if (checkIn.isBefore(today))
-            throw new HotelSystemExceptions("Check-in date cannot be in the past.");
+            throw new IllegalArgumentException("Check-in date cannot be in the past");
         if (!checkOut.isAfter(checkIn))
-            throw new HotelSystemExceptions("check-out must be after check-in");
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
         this.user = user;
         this.hotel = hotel;
         this.checkIn = checkIn;
@@ -34,17 +32,21 @@ public class Booking
         this.totalPrice = hotel.getPricePerNight() * nights;
     }
 
-    public static Booking create(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut, Payable payer) throws HotelSystemExceptions
+    public static Booking create(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut, Payable payer)
     {
 
         Objects.requireNonNull(user);
         Objects.requireNonNull(hotel);
 
-        if (!checkOut.isAfter(checkIn))
-            throw new HotelSystemExceptions("check-out must be after check-in");
+        if (!checkOut.isAfter(checkIn) || checkIn.isBefore(LocalDate.now())) {
+            System.out.println("Invalid date range.");
+            return null;
+        }
 
-        if (!hotel.isRoomAvailable(checkIn, checkOut))
-            throw new HotelSystemExceptions("No rooms available in " + hotel.getName());
+        if (!hotel.isRoomAvailable(checkIn, checkOut)) {
+            System.out.println("No rooms available in " + hotel.getName());
+            return null;
+        }
 
         Booking booking = new Booking(user, hotel, checkIn, checkOut);
 

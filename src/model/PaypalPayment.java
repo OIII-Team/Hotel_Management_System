@@ -1,5 +1,5 @@
 package model;
-import exceptions.HotelSystemExceptions;
+import exceptions.HotelSystemPaymentExceptions;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -16,12 +16,12 @@ public class PaypalPayment extends Payment
         this.payerId = payerId;
     }
 
-    public void validatePayment() throws HotelSystemExceptions
+    public void validatePayment() throws HotelSystemPaymentExceptions
     {
         if (payerEmail == null || !payerEmail.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$"))
-            throw new HotelSystemExceptions("Invalid email address");
+            throw new HotelSystemPaymentExceptions("Invalid email address");
         if (payerId == null || payerId.isEmpty() || !payerId.matches("\\d{9}"))
-            throw new HotelSystemExceptions("Invalid payer ID");
+            throw new HotelSystemPaymentExceptions("Invalid payer ID");
     }
 
 
@@ -34,7 +34,7 @@ public class PaypalPayment extends Payment
             try {
                 validatePayment();
                 return true;
-            } catch (HotelSystemExceptions e) {
+            } catch (HotelSystemPaymentExceptions e) {
                 System.out.println(e.getMessage());
 
                 if (attempts >= maxAttempts - 1) {

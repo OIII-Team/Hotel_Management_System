@@ -1,6 +1,6 @@
 package model;
 
-import exceptions.HotelSystemExceptions;
+import exceptions.HotelSystemPaymentExceptions;
 import structures.BookingQueue;
 import structures.HotelTree;
 import java.time.LocalDate;
@@ -68,7 +68,11 @@ public class HotelsView {
                 chosen = tsimmers.get(idx - hotels.size() - 1);
             }
             System.out.print("\n");
-            chosen.printHotelDetails();
+            if (chosen instanceof Tsimmer) {
+                ((Tsimmer) chosen).printTsimmerDetails();
+            } else {
+                chosen.printHotelDetails();
+            }
             System.out.print("\nWould you like to see hotel's/tsimmer's reviews? (yes/no) ");
             String resp = sc.nextLine().trim();
             if (resp.equalsIgnoreCase("yes"))
@@ -106,7 +110,7 @@ public class HotelsView {
             try {
                 maxPrice = Double.parseDouble(sc.nextLine().trim());
                 if (maxPrice >= 0) break;
-            } catch (NumberFormatException e) { /* fall through */ }
+            } catch (NumberFormatException e) {}
             System.out.println("Please enter a non-negative number.");
         }
         if (maxPrice > 0) {
@@ -121,7 +125,7 @@ public class HotelsView {
             try {
                 minRating = Double.parseDouble(sc.nextLine().trim());
                 if (minRating >= 0 && minRating <= 5) break;
-            } catch (NumberFormatException e) { /* fall through */ }
+            } catch (NumberFormatException e) {}
             System.out.println("Please enter a number between 0 and 5.");
         }
         if (minRating > 0) {
@@ -280,7 +284,7 @@ public class HotelsView {
                         System.out.print("Expiry (MM/yyyy): ");
                         String[] parts = sc.nextLine().trim().split("/");
                         if (parts.length != 2) {
-                            System.out.println(new HotelSystemExceptions.DateException.InvalidFormatException().getMessage());
+                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
                             continue;
                         }
                         int m, y;
@@ -288,16 +292,16 @@ public class HotelsView {
                             m = Integer.parseInt(parts[0].trim());
                             y = Integer.parseInt(parts[1].trim());
                         } catch (NumberFormatException e) {
-                            System.out.println(new HotelSystemExceptions.DateException.InvalidFormatException().getMessage());
+                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
                             continue;
                         }
                         if (m < 1 || m > 12) {
-                            System.out.println(new HotelSystemExceptions.DateException.InvalidFormatException().getMessage());
+                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
                             continue;
                         }
                         exp = YearMonth.of(y, m);
                         if (exp.isBefore(YearMonth.now())) {
-                            System.out.println(new HotelSystemExceptions.DateException.ExpiredException().getMessage());
+                            System.out.println(new HotelSystemPaymentExceptions.DateException.ExpiredException().getMessage());
                             continue;
                         }
                         break;
@@ -325,7 +329,6 @@ public class HotelsView {
             hotel.updateMatrixForBooking(in, out);
             System.out.println("\nBooking confirmed.");
             if (payer instanceof CreditCardPayment) {
-
                 paymentRef = ((CreditCardPayment) payer).getCardNumber().length() > 4 ?
                         ((CreditCardPayment) payer).getCardNumber().
                                 substring(((CreditCardPayment) payer).getCardNumber().length() - 4) : cardNum;
@@ -340,7 +343,7 @@ public class HotelsView {
 
             booking.printBookingDetails();
 
-        } catch (Exception ex) {
+        } catch (HotelSystemPaymentExceptions ex) {
             System.out.println(ex.getMessage());
         }
     }

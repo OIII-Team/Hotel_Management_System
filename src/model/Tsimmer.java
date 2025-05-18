@@ -35,6 +35,7 @@ public class Tsimmer extends Hotel
     {
         return viewType;
     }
+
     public void printTsimmerDetails() {
         super.printHotelDetails();
         System.out.println("Family Friendly: " + (isFamilyFriendly ? "Yes" : "No"));
