@@ -13,7 +13,7 @@ public class Main
         BookingList bookings = new BookingList();
         BookingQueue waitList = new BookingQueue();
         Admin admin = new Admin("123456789");
-        int defaultMatrix[][] = new int[12][31]; // 12 months, 31 days
+        int[][] defaultMatrix = new int[12][31]; // 12 months, 31 days
 
 
         //North

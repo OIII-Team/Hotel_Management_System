@@ -174,14 +174,6 @@ public class Hotel
         }
     }
 
-    public void addHotelToTree(Hotel hotel)
-    {
-        if (tree == null) {
-            tree = new HotelTree();
-        }
-        tree.addHotel(hotel);
-    }
-
     public void addBooking(Booking booking)
     {
         bookings.addBooking(booking);

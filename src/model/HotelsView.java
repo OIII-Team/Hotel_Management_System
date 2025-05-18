@@ -139,9 +139,7 @@ public class HotelsView {
 
         while (true) {
             System.out.println("Select desired amenities (comma-separated numbers, 0 = none):");
-            for (int i = 0; i < all.length; i++) {
-                System.out.printf("%d. %s%n", i + 1, all[i]);
-            }
+            Amenities.printOptions();
 
             String line = sc.nextLine().trim();
             if (line.equals("0") || line.isBlank()) {

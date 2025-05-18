@@ -49,16 +49,6 @@ public class Review
         System.out.print("\n");
     }
 
-    public ReviewList addReviewToList(Review review)
-    {
-        if (reviewList == null)
-        {
-            reviewList = new ReviewList();
-        }
-        reviewList.addReview(review);
-        return reviewList;
-    }
-
     public static Review create(User userName, Hotel hotel, int rating, String comment, LocalDateTime when){
         Review r = new Review(userName, hotel, rating, comment, when);
         hotel.addReview(r);
