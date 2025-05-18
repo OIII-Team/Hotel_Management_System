@@ -14,13 +14,13 @@ public class Admin extends User
     public Admin(String name, String email, String ID, String password)
     {
         super(name, email, ID);
-        this.password = "123456789";
+        this.password = password;
     }
 
     public Admin(String password)
     {
         super();
-        this.password = "123456789";
+        this.password = password;
     }
 
     public static Admin adminLogin(Scanner scanner)
