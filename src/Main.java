@@ -13,7 +13,9 @@ public class Main
         BookingList bookings = new BookingList();
         BookingQueue waitList = new BookingQueue();
         Admin admin = new Admin("123456789");
+        User user = new User("ofer avioz", "oferavioz@gmail.com", "212052385");
         int[][] defaultMatrix = new int[12][31]; // 12 months, 31 days
+        Menu menu = new Menu(hotelTree, waitList, users);
 
 
         //North
@@ -32,11 +34,6 @@ public class Main
         hotelTree.addHotel(new Tsimmer("Galim Tsimmer", Region.NORTH, new Location(Region.NORTH, City.TIBERIAS, "Lake View Rd. 5"), 300.0, new Amenities[]{Amenities.WIFI}, 5, 4, 3.9,defaultMatrix, bookings, hotelTree, reviewList, true, false, "Lake"));
         hotelTree.addHotel(new Tsimmer("Mitzpe Ramon Tsimmer", Region.SOUTH, new Location(Region.SOUTH, City.MITZPE_RAMON, "Desert Path 1"), 250.0, new Amenities[]{Amenities.PARKING}, 3, 2, 4.1,defaultMatrix, bookings, hotelTree, reviewList, false, true, "Desert"));
 
-        Menu.setHotelTree(hotelTree); // set the hotel tree in Menu
-        Menu.setWaitlist(waitList); // set the waitlist in Menu
-        Menu.setUsers(users); // set the user's list in Menu
-        Menu.setAdmin(admin); // set the admin in Menu
-        Menu.main(args); // call Menu
-
+        menu.run();
     }
 }

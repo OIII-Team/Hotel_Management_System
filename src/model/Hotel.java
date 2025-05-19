@@ -35,7 +35,6 @@ public class Hotel
         this.totalRooms = totalRooms;
         this.maxCapacity = maxCapacity;
         this.rating = rating;
-        int year = LocalDate.now().getYear();
         this.availability = createDefaultAvailabilityMatrix(totalRooms);
         this.bookings = (bookings != null) ? bookings : new BookingList();
         this.tree = (tree != null) ? tree : new HotelTree();
@@ -304,6 +303,7 @@ public class Hotel
     {
         return reviewList;
     }
+
     public void printReviewList()
     {
         if (reviewList == null || reviewList.isEmpty()) {

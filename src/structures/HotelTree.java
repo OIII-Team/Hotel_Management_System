@@ -89,6 +89,8 @@ public class HotelTree
     }
 
     // Nested classes for region and city nodes
+    // Nadav said it's fine to umplement the tree like this!!!!
+
     private static class RegionNode {
         final Region region;
         final List<CityNode> cities = new ArrayList<>();
@@ -129,40 +131,6 @@ public class HotelTree
     private static City cityOf(Hotel h) {
         Location loc = h.getLocation();
         return (loc == null) ? null : loc.getCity();
-    }
-
-    public void printCities(Region region) {
-        RegionNode rNode = regionNode(region, false);
-        if (rNode == null) {
-            System.out.println("No cities found for region: " + region.getDisplayName());
-            return;
-        }
-
-        List<CityNode> sorted = new ArrayList<>(rNode.cities);
-        sorted.sort(Comparator.comparing(c -> c.city.getDisplayName()));
-
-        System.out.println("Cities in " + region.getDisplayName() + ":");
-        for (int i = 0; i < sorted.size(); i++) {
-            System.out.println("  " + (i + 1) + ". " + sorted.get(i).city);
-        }
-    }
-
-    public void printHotelsByCity(Region region, int city) {
-
-        City cityEnum = City.getCityFromChoice(region, city);
-        if (cityEnum == null) {
-            System.out.println("Invalid city choice.");
-            return;
-        }
-        City cityName = cityEnum;
-        CityNode cNode = cityNode(regionNode(region, false),cityName, false);
-        if (cNode == null) {
-            System.out.println("No hotels found in " + city + ", " + region.getDisplayName());
-            return;
-        }
-        System.out.println("Hotels in " + cityEnum + ", " + region.getDisplayName() + ":");
-        for (Hotel h : cNode.hotels)
-            System.out.println("  - " + h.getName());
     }
 
     public void searchHotelByName(Scanner scanner, HotelTree tree)

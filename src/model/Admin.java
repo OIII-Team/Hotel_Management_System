@@ -51,7 +51,6 @@ public class Admin extends User
     {
 
         System.out.println("--Add New Hotel--");
-        sc.nextLine();
         System.out.print("Name: ");
         String name = sc.nextLine();
 
@@ -118,7 +117,6 @@ public class Admin extends User
     public void removeHotelInteractive(Scanner sc, HotelTree tree)
     {
         System.out.println("\n--Remove Hotel--");
-        sc.nextLine();
         System.out.print("Enter hotel name to remove: ");
         String name = sc.nextLine();
         System.out.println("Enter hotel's region:");
