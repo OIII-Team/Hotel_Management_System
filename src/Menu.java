@@ -36,6 +36,11 @@ while (true)
     System.out.println("3. Exit");
 
     System.out.print("Enter your choice: ");
+    if(!scanner.hasNextInt()) {
+        System.out.println("Invalid input. Please enter a number.");
+        scanner.nextLine();
+        continue;
+    }
     int choice = scanner.nextInt();
     scanner.nextLine();
 
@@ -46,7 +51,7 @@ while (true)
             userMenu(scanner);
             break;
         case 2:
-            Admin admin = Admin.adminLogin(scanner);
+            admin = Admin.adminLogin(scanner);
             adminMenu(scanner);
             break;
         case 3:
