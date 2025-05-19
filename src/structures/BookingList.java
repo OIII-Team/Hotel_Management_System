@@ -15,7 +15,7 @@ public class BookingList
 
     public void addBooking(Booking booking) {
             BookingNode n = new BookingNode(booking);
-            if (head == null) {
+            if (isEmpty()) {
                 head = tail = n;
             } else {
                 tail.next = n;
@@ -26,7 +26,7 @@ public class BookingList
 
     public void removeBooking(Booking booking)
     {
-        if (head == null) return;
+        if (isEmpty()) return;
 
         if (head.booking.equals(booking)) {
             head = head.next;
@@ -42,6 +42,11 @@ public class BookingList
                 break;
             }
         }
+    }
+
+    public boolean isEmpty()
+    {
+        return head == null;
     }
 
     public int size()

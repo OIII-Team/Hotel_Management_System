@@ -5,10 +5,10 @@ import java.util.Scanner;
 
 public class Menu {
 
-    private final HotelTree    hotelTree;
+    private final HotelTree hotelTree;
     private final BookingQueue waitlist;
-    private final UsersList    users;
-    private User  currentUser;
+    private final UsersList users;
+    private User currentUser;
     private Admin admin;
 
     public Menu(HotelTree tree, BookingQueue waitlist, UsersList users) {
@@ -37,8 +37,8 @@ public class Menu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1 -> { currentUser = User.loginOrRegister(scanner, users); userMenu(scanner); }
-                case 2 -> { admin = Admin.adminLogin(scanner);                  adminMenu(scanner); }
+                case 1 -> { currentUser = User.loginOrRegister(users); userMenu(scanner); }
+                case 2 -> { admin = Admin.adminLogin(scanner); adminMenu(scanner); }
                 case 3 -> { System.out.println("Good-bye!"); return; }
                 default -> System.out.println("Invalid choice.");
             }

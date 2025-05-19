@@ -49,6 +49,7 @@ public class UsersList
             this.next = null;
         }
     }
+
     public UserNode getHead() {
         return head;
     }

@@ -319,7 +319,9 @@ public class HotelsView {
                 System.out.println("Invalid choice — please select 1 or 2.");
             }
 
-            Booking booking = Booking.create(currentUser, hotel, in, out, payer);
+            Booking booking = new Booking(currentUser, hotel, in, out);
+            booking.create(booking, payer);
+
             if (booking == null) {
                 System.out.println("Payment failed. Reservation not created.");
                 return;

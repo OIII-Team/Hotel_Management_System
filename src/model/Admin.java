@@ -49,7 +49,6 @@ public class Admin extends User
 
     public void addHotelInteractive(Scanner sc, HotelTree tree)
     {
-
         System.out.println("--Add New Hotel--");
         System.out.print("Name: ");
         String name = sc.nextLine();
@@ -108,7 +107,7 @@ public class Admin extends User
 
         Location loc = new Location(selectedRegion, selectedCity, address);
         Hotel hotel = new Hotel(name, selectedRegion, loc, price,
-                amenities, totalRooms, maxCapacity, rating,Hotel.createDefaultAvailabilityMatrix(totalRooms), new BookingList(), new HotelTree(), new ReviewList());
+                amenities, totalRooms, maxCapacity, rating, new BookingList(), new HotelTree(), new ReviewList());
 
         tree.addHotel(hotel);
         System.out.println("Hotel \"" + name + "\" added.");

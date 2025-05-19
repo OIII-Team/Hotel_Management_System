@@ -29,12 +29,11 @@ public class BookingQueue {
         public LocalDate getCheckIn() { return checkIn; }
         public LocalDate getCheckOut() { return checkOut; }
 
-        public boolean tryExecute() throws HotelSystemPaymentExceptions
+        public boolean tryExecute()
         {
             if (!hotel.isRoomAvailable(checkIn, checkOut)) {
                 return false;
             }
-            //creates booking without payment
             Booking booking = new Booking(user, hotel, checkIn, checkOut);
             hotel.addBooking(booking);
             user.addBooking(booking);
@@ -44,9 +43,9 @@ public class BookingQueue {
 
     private final Queue<BookingRequest> queue = new LinkedList<>();
 
-    public void enqueue(BookingRequest request) throws HotelSystemPaymentExceptions
+    public void enqueue(BookingRequest request)
     {
-        if (request == null) throw new HotelSystemPaymentExceptions("Request cannot be null");
+        if (request == null) throw new IllegalArgumentException("Request cannot be null");
         queue.offer(request);
     }
 

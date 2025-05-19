@@ -25,8 +25,9 @@ public class Hotel
 
 
     public Hotel(String name, Region region, Location location, double pricePerNight,
-                 Amenities[] amenities, int totalRooms, int maxCapacity, double rating, int[][] availability,
-                 BookingList bookings, HotelTree tree, ReviewList reviewList){
+                 Amenities[] amenities, int totalRooms, int maxCapacity, double rating,
+                 BookingList bookings, HotelTree tree, ReviewList reviewList)
+    {
         this.name = name;
         this.region = region;
         this.location = location;
@@ -41,7 +42,8 @@ public class Hotel
         this.reviewList = (reviewList != null) ? reviewList : new ReviewList();
     }
 
-    public Hotel() {
+    public Hotel()
+    {
         // Default constructor
     }
 
@@ -55,10 +57,13 @@ public class Hotel
         return name;
     }
 
-    public void setRegion(Region region) {
-        if (region != null) {
+    public void setRegion(Region region)
+    {
+        if (region != null)
+        {
             this.region = region;
-        } else {
+        } else
+        {
             System.out.println("Invalid region.");
         }
     }
@@ -70,11 +75,10 @@ public class Hotel
 
     public void setPricePerNight(double pricePerNight)
     {
-        if(pricePerNight > 0)
+        if (pricePerNight > 0)
         {
             this.pricePerNight = pricePerNight;
-        }
-        else
+        } else
         {
             System.out.println("Price per night must be greater than 0.");
         }
@@ -87,11 +91,10 @@ public class Hotel
 
     public void setTotalRooms(int totalRooms)
     {
-        if(totalRooms > 0)
+        if (totalRooms > 0)
         {
             this.totalRooms = totalRooms;
-        }
-        else
+        } else
         {
             System.out.println("Total rooms must be greater than 0.");
         }
@@ -104,11 +107,10 @@ public class Hotel
 
     public void setMaxCapacity(int maxCapacity)
     {
-        if(maxCapacity > 0)
+        if (maxCapacity > 0)
         {
             this.maxCapacity = maxCapacity;
-        }
-        else
+        } else
         {
             System.out.println("Max capacity must be greater than 0.");
         }
@@ -119,9 +121,11 @@ public class Hotel
         return maxCapacity;
     }
 
-    public ReviewList getReview(){
+    public ReviewList getReview()
+    {
         return reviewList;
     }
+
     public void setReview(ReviewList reviewList)
     {
         this.reviewList = reviewList;
@@ -134,11 +138,10 @@ public class Hotel
 
     public void setRating(double rating)
     {
-        if(rating >= 0 && rating <= 5)
+        if (rating >= 0 && rating <= 5)
         {
             this.rating = rating;
-        }
-        else
+        } else
         {
             System.out.println("Rating must be between 0 and 5.");
         }
@@ -153,6 +156,7 @@ public class Hotel
     {
         this.location = location;
     }
+
     public Location getLocation()
     {
         return location;
@@ -163,11 +167,15 @@ public class Hotel
         return amenities;
     }
 
-    public void printAmenities() {
-        if (amenities == null || amenities.length == 0) {
+    public void printAmenities()
+    {
+        if (amenities == null || amenities.length == 0)
+        {
             System.out.println("No amenities listed.");
-        } else {
-            for (Amenities a : amenities) {
+        } else
+        {
+            for (Amenities a : amenities)
+            {
                 System.out.println(" - " + a);
             }
         }
@@ -190,11 +198,13 @@ public class Hotel
 
         int overlapping = 0;
 
-        for (Booking b : bookings.asList()) {
+        for (Booking b : bookings.asList())
+        {
             boolean overlap = checkIn.isBefore(b.getCheckOut())
                     && b.getCheckIn().isBefore(checkOut);
 
-            if (overlap) {
+            if (overlap)
+            {
                 overlapping++;
                 if (overlapping >= totalRooms)
                     return false;
@@ -203,52 +213,61 @@ public class Hotel
         return true;
     }
 
-    public static int[][] createDefaultAvailabilityMatrix(int totalRooms) {
+    public static int[][] createDefaultAvailabilityMatrix(int totalRooms)
+    {
         int year = LocalDate.now().getYear();
         int[][] mat = new int[12][];
-        for (int m = 1; m <= 12; m++) {
+        for (int m = 1; m <= 12; m++)
+        {
             int days = YearMonth.of(year, m).lengthOfMonth();
-            mat[m-1] = new int[days];
-            Arrays.fill(mat[m-1], totalRooms);
+            mat[m - 1] = new int[days];
+            Arrays.fill(mat[m - 1], totalRooms);
         }
         return mat;
     }
 
-    public boolean isDateAvailable(LocalDate date) {
-        int m = date.getMonthValue()-1, d = date.getDayOfMonth()-1;
+    public boolean isDateAvailable(LocalDate date)
+    {
+        int m = date.getMonthValue() - 1, d = date.getDayOfMonth() - 1;
         return availability[m][d] > 0;
     }
 
 
-    public void setDateAvailability(LocalDate date, boolean available) {
+    public void setDateAvailability(LocalDate date, boolean available)
+    {
         int m = date.getMonthValue() - 1;
-        int d = date.getDayOfMonth()   - 1;
+        int d = date.getDayOfMonth() - 1;
         if (m < 0 || m >= availability.length) return;
-        if (d < 0 || d >= availability[m].length)   return;
+        if (d < 0 || d >= availability[m].length) return;
         availability[m][d] = available ? totalRooms : 0;
     }
 
-    public void updateMatrixForBooking(LocalDate checkIn, LocalDate checkOut) {
+    public void updateMatrixForBooking(LocalDate checkIn, LocalDate checkOut)
+    {
         LocalDate d = checkIn;
-        while (d.isBefore(checkOut)) {
-            int m = d.getMonthValue()-1, day = d.getDayOfMonth()-1;
+        while (d.isBefore(checkOut))
+        {
+            int m = d.getMonthValue() - 1, day = d.getDayOfMonth() - 1;
             availability[m][day]--;
             d = d.plusDays(1);
         }
     }
 
-    public void updateMatrixForCancellation(LocalDate checkIn, LocalDate checkOut) {
+    public void updateMatrixForCancellation(LocalDate checkIn, LocalDate checkOut)
+    {
         LocalDate d = checkIn;
-        while (d.isBefore(checkOut)) {
-            int m = d.getMonthValue()-1, day = d.getDayOfMonth()-1;
+        while (d.isBefore(checkOut))
+        {
+            int m = d.getMonthValue() - 1, day = d.getDayOfMonth() - 1;
             availability[m][day]++;
             d = d.plusDays(1);
         }
     }
 
-    public void displayAvailabilityMatrix(int year, int month) {
-        String[] months = { "Jan","Feb","Mar","Apr","May","Jun",
-                "Jul","Aug","Sep","Oct","Nov","Dec" };
+    public void displayAvailabilityMatrix(int year, int month)
+    {
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         int mIndex = month - 1;
         int[] days = availability[mIndex];
         int totalDays = days.length;
@@ -257,19 +276,22 @@ public class Hotel
 
         System.out.printf("\nAvailability for %s %d:%n%n", months[mIndex], year);
 
-        for (int r = 0; r < rows; r++) {
+        for (int r = 0; r < rows; r++)
+        {
             int start = r * perRow;
             if (start >= totalDays) break;
             int end = Math.min(start + perRow, totalDays);
 
             System.out.print("Day      ");
-            for (int d = start + 1; d <= end; d++) {
+            for (int d = start + 1; d <= end; d++)
+            {
                 System.out.printf("%3d", d);
             }
             System.out.println();
 
             System.out.print("Status  ");
-            for (int i = start; i < end; i++) {
+            for (int i = start; i < end; i++)
+            {
                 System.out.printf("%3s", days[i] > 0 ? "✓" : "✗");
             }
             System.out.println("");
@@ -293,7 +315,8 @@ public class Hotel
 
     public void addReview(Review review)
     {
-        if (this.reviewList == null) {
+        if (this.reviewList == null)
+        {
             this.reviewList = new ReviewList();
         }
         reviewList.addReview(review);
@@ -306,13 +329,13 @@ public class Hotel
 
     public void printReviewList()
     {
-        if (reviewList == null || reviewList.isEmpty()) {
-            System.out.println("No reviews available.");
-        } else {
-            for (Review r : reviewList.asList()) {
+        for (Review r : reviewList.asList())
+        {
+            if (r.getHotelName().equals(this.name))
                 r.printReview();
-            }
+            else
+                System.out.println("No reviews available for this hotel.");
         }
     }
-
 }
+

@@ -32,13 +32,17 @@ public class Booking
         this.totalPrice = hotel.getPricePerNight() * nights;
     }
 
-    public static Booking create(User user, Hotel hotel, LocalDate checkIn, LocalDate checkOut, Payable payer)
+    public Booking create(Booking booking, Payable payer)
     {
+        LocalDate checkIn = booking.checkIn;
+        LocalDate checkOut = booking.checkOut;
+        Hotel hotel = booking.hotel;
+        User user = booking.user;
 
         Objects.requireNonNull(user);
         Objects.requireNonNull(hotel);
 
-        if (!checkOut.isAfter(checkIn) || checkIn.isBefore(LocalDate.now())) {
+        if (!checkOut.isAfter(booking.checkIn) || checkIn.isBefore(LocalDate.now())) {
             System.out.println("Invalid date range.");
             return null;
         }
@@ -48,22 +52,24 @@ public class Booking
             return null;
         }
 
-        Booking booking = new Booking(user, hotel, checkIn, checkOut);
+        Booking b = new Booking(user, hotel, checkIn, checkOut);
 
-        hotel.addBooking(booking);
-        user.addBooking(booking);
-
-        double total = booking.getTotalPrice();
+        double total = b.getTotalPrice();
         double fee = payer.calculateFee(total);
         double baseAmount = total - fee;
 
         boolean success = payer.processPayment(user, baseAmount);
         if (!success)
         {
-            booking.cancelBooking();
+            b.cancelBooking();
             return null;
         }
-        return booking;
+        booking.payer = payer;
+        hotel.updateMatrixForBooking(checkIn, checkOut);
+        hotel.addBooking(b);
+        user.addBooking(b);
+
+        return b;
     }
 
 

@@ -94,9 +94,10 @@ public class User
     }
 
     //Method for registering a new user or logging in an existing one
-    public static User loginOrRegister(Scanner scanner, UsersList users) {
+    public static User loginOrRegister(UsersList users) {
         System.out.println("Welcome to User's login page!");
         System.out.print("Enter your ID (9 digits): ");
+        Scanner scanner = new Scanner(System.in);
         String id = scanner.nextLine();
 
         UsersList.UserNode current = users.getHead();
@@ -307,7 +308,8 @@ public class User
                     }
                 }
 
-                Booking booking = Booking.create(this, hotel, in, out, payer);
+                Booking booking =new Booking(this, hotel, in, out);
+                booking.create(booking, payer);
                 req.getUser().removeWaitlistNotification(req);
                 booking.getHotel().updateMatrixForBooking(in, out);
                 if (booking == null) {

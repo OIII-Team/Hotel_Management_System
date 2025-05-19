@@ -3,16 +3,16 @@ package structures;
 import model.*;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
 import model.Hotel;
+// Nadav said it's fine to implement the tree like this!!!!
+// N-ary tree implementation
 
 public class HotelTree
 {
     private final List<RegionNode> regions = new ArrayList<>();
-
 
     public void addHotel(Hotel hotel)
     {
@@ -89,8 +89,6 @@ public class HotelTree
     }
 
     // Nested classes for region and city nodes
-    // Nadav said it's fine to umplement the tree like this!!!!
-
     private static class RegionNode {
         final Region region;
         final List<CityNode> cities = new ArrayList<>();
