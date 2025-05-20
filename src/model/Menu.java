@@ -8,14 +8,18 @@ public class Menu {
     private final HotelTree hotelTree;
     private final BookingQueue waitlist;
     private final UsersList users;
+    private final ReviewList reviewList;
+    private final UsersBookingStack usersBookingStack;
     private User currentUser;
     private Admin admin;
 
-    public Menu(HotelTree tree, BookingQueue waitlist, UsersList users) {
-        this.hotelTree = tree;
-        this.waitlist  = waitlist;
+    public Menu(HotelTree hotelTree, UsersList users, ReviewList reviewList, BookingQueue waitList, UsersBookingStack usersBookingStack){
+        this.usersBookingStack = usersBookingStack;
+        this.reviewList = reviewList;
+        this.hotelTree = hotelTree;
+        this.waitlist  = waitList;
         this.users     = users;
-        User.setWaitlist(waitlist);
+        User.setWaitlist(waitList);
     }
 
     public void run() {

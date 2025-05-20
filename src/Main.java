@@ -18,7 +18,7 @@ public class Main
         UsersBookingStack usersBookingStack = new UsersBookingStack();
 
         // Initialize the menu
-        Menu menu = new Menu(hotelTree, waitList, users);
+        Menu menu = new Menu(hotelTree, users, reviewList, waitList, usersBookingStack);
 
         // Hotels initialization -> insertion into the tree
         //North
@@ -61,8 +61,9 @@ public class Main
         // Booking creation
         Booking booking1 = new Booking(user, hotel1, LocalDate.now(), LocalDate.now().plusDays(3));
           // Payment creation for booking
-        Payment payment1 = new CreditCardPayment(booking1.getTotalPrice(), LocalDate.now(), "1234123412341234", "123", YearMonth.of(2025, 12));
+        Payment payment1 = new CreditCardPayment(booking1.getTotalPrice(), LocalDateTime.now(), "1234123412341234", "123", YearMonth.of(2025, 12));
         booking1.create(booking1, payment1);  // Create also does push to the stack and add to the booking list
+
 
         menu.run();
     }

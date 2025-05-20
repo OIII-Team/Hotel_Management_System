@@ -41,6 +41,6 @@ public class UsersBookingStack
             return;
         }
         System.out.println("User's bookings (latest first):");
-        usersBookingsStack.forEach(b -> {System.out.print("  - "); b.printLine(); });
+        usersBookingsStack.forEach(b -> {System.out.print("  - "); System.out.println(b); });
     }
 }

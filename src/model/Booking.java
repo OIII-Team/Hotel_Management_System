@@ -122,7 +122,7 @@ public class Booking
         System.out.println("Check-in: " + checkIn);
         System.out.println("Check-out: " + checkOut);
         System.out.println("Nights: " + getNights());
-        System.out.println("Total Price: " + totalPrice);
+        System.out.println(payer);
     }
 
     public void cancelBooking()
@@ -131,8 +131,8 @@ public class Booking
     }
 
     //For upcoming bookings method in User
-    public void printLine()
-    {
-        System.out.printf("%s | %s → %s | ₪%.0f%n", hotel.getName(), checkIn, checkOut, totalPrice);
+    public String toString() {
+        return String.format("%s | %s → %s | ₪%.0f",
+                hotel.getName(), checkIn, checkOut, totalPrice);
     }
 }

@@ -26,24 +26,29 @@ public class Admin extends User
     public static Admin adminLogin(Scanner scanner)
     {
         System.out.println("\nWelcome to the Admin Login Page!");
-        System.out.print("Enter admin password: ");
-        String inputPassword = scanner.nextLine();
-        String correct = "123456789";
+        while (true)
+        {
+            System.out.print("Enter admin password: ");
+            String inputPassword = scanner.nextLine();
+            String correct = "123456789";
 
-        boolean match = inputPassword.length() == correct.length();
-        for (int i = 0; match && i < correct.length(); i++) {
-            if (inputPassword.charAt(i) != correct.charAt(i)) {
-                match = false;
+            boolean match = inputPassword.length() == correct.length();
+            for (int i = 0; match && i < correct.length(); i++)
+            {
+                if (inputPassword.charAt(i) != correct.charAt(i))
+                {
+                    match = false;
+                }
             }
-        }
-        if (match)
-        {
-            System.out.println("Login successful!");
-            return new Admin(inputPassword);
-        } else
-        {
-            System.out.println("Invalid password. Please try again.");
-            return adminLogin(scanner);
+            if (match)
+            {
+                System.out.println("Login successful!");
+                return new Admin(inputPassword);
+            } else
+            {
+                System.out.println("Invalid password. Please try again.");
+                continue;
+            }
         }
     }
 

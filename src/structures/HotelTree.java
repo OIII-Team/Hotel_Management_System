@@ -137,7 +137,7 @@ public class HotelTree
         String hotelName = scanner.nextLine().trim();
         Hotel hotel = tree.findHotel(hotelName);
         if (hotel != null) {
-            System.out.println("Hotel found! you searched for : " + hotel.getName() + ", " + hotel.getRegion());
+            System.out.println("Hotel found! you searched for : " + hotel.getName() + ", " + hotel.getRegion() + "\n");
         } else {
             System.out.println("Hotel not found.");
             System.out.println("Returning back to menu...");

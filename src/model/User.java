@@ -137,11 +137,9 @@ public class User
         return newUser;
     }
 
-    public void PrintUserDetails()
+    public String toString()
     {
-        System.out.println("Name: " + name);
-        System.out.println("User ID: " + ID);
-        System.out.println("Email: " + email);
+        return "Name: " + name + ", ID: " + ID + ", Email: " + email;
     }
 
     public void cancelLastBooking(Scanner sc) {
@@ -152,7 +150,7 @@ public class User
         }
 
         System.out.println("\nLast booking:");
-        last.printLine();
+        System.out.println(last);
         System.out.print("Cancel it? (yes/no) ");
 
         if (!sc.nextLine().trim().equalsIgnoreCase("yes")) {
@@ -190,7 +188,7 @@ public class User
     public void removeBooking() { bookingStack.pop(); }
 
     public void leaveReview(Scanner sc, HotelTree tree) {
-        System.out.print("Enter hotel name to review: ");
+        System.out.print("\nEnter hotel name to review: ");
         String name = sc.nextLine().trim();
         Hotel hotel = tree.findHotel(name);
         if (hotel == null) {
@@ -291,7 +289,7 @@ public class User
                                 Integer.parseInt(parts[1].trim()),
                                 Integer.parseInt(parts[0].trim())
                         );
-                        payer = new CreditCardPayment(amount, LocalDate.now(), cardNum, cvv, exp);
+                        payer = new CreditCardPayment(amount, LocalDateTime.now(), cardNum, cvv, exp);
                         paymentRef = cardNum.length() > 4 ? cardNum.substring(cardNum.length() - 4) : cardNum;
                         break;
                     } else if (choice.equals("2")) {
@@ -299,7 +297,7 @@ public class User
                         String email = sc.nextLine().trim();
                         System.out.print("PayPal Account ID for confirmation: ");
                         String id = sc.nextLine().trim();
-                        payer = new PaypalPayment(amount, LocalDate.now(), email, id);
+                        payer = new PaypalPayment(amount, LocalDateTime.now(), email, id);
                         int at = email.indexOf('@');
                         paymentRef = email.substring(0, Math.min(at, 4));
                         break;

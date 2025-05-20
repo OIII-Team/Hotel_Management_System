@@ -312,6 +312,12 @@ public class Hotel
         printAmenities();
     }
 
+    public String toString(){
+            return String.format(
+                    "%s | %s, %s | ₪%.0f | %.1f★", name, location.getCity().getDisplayName(),
+                    region.getDisplayName(), pricePerNight, rating);
+    }
+
 
     public void addReview(Review review)
     {
@@ -336,6 +342,7 @@ public class Hotel
             else
                 System.out.println("No reviews available for this hotel.");
         }
+        System.out.println("\n");
     }
 }
 

@@ -4,6 +4,8 @@ import exceptions.HotelSystemPaymentExceptions;
 import model.Booking;
 import model.User;
 import model.Hotel;
+
+import java.nio.channels.IllegalSelectorException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -57,7 +59,8 @@ public class BookingQueue {
             if (!success) {
                 queue.offer(req);
             }
-        } catch (HotelSystemPaymentExceptions ex) {
+        } catch (IllegalSelectorException ex) {
+            System.out.println("Error processing booking request: " + ex.getMessage());
         }
     }
 

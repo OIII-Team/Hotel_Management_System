@@ -62,8 +62,8 @@ public class UsersList
             return;
         }
         while (current != null) {
-            System.out.print("\n");
-            current.user.PrintUserDetails();
+            System.out.print("- ");
+            System.out.println(current.user);
             current = current.next;
         }
     }

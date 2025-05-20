@@ -2,6 +2,7 @@ package model;
 import exceptions.HotelSystemPaymentExceptions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class PaypalPayment extends Payment
@@ -9,7 +10,7 @@ public class PaypalPayment extends Payment
     private String payerEmail;
     private String payerId;
 
-    public PaypalPayment(double amount, LocalDate paymentDate, String payerEmail, String payerId)
+    public PaypalPayment(double amount, LocalDateTime paymentDate, String payerEmail, String payerId)
     {
         super(amount, paymentDate);
         this.payerEmail = payerEmail;

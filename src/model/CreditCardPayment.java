@@ -1,7 +1,8 @@
 package model;
 import exceptions.HotelSystemPaymentExceptions;
+
+import java.time.LocalDateTime;
 import java.util.Scanner;
-import java.time.LocalDate;
 import java.time.YearMonth;
 
 public class CreditCardPayment extends Payment
@@ -10,7 +11,7 @@ public class CreditCardPayment extends Payment
     private String cvv;
     private YearMonth expirationDate;
 
-    public CreditCardPayment(double amount, LocalDate paymentDate, String cardNumber, String cvv, YearMonth expirationDate) {
+    public CreditCardPayment(double amount, LocalDateTime paymentDate, String cardNumber, String cvv, YearMonth expirationDate) {
         super(amount, paymentDate);
         this.cardNumber = cardNumber;
         this.cvv = cvv;

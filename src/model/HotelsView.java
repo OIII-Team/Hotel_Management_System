@@ -4,6 +4,8 @@ import exceptions.HotelSystemPaymentExceptions;
 import structures.BookingQueue;
 import structures.HotelTree;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.time.YearMonth;
@@ -212,22 +214,23 @@ public class HotelsView {
        ===================================================== */
     private void makeBookingFlow(Scanner sc, Hotel hotel) {
         try {
-            LocalDate today = LocalDate.now();
+            LocalDateTime today = LocalDateTime.now();
             LocalDate in;
             int nights;
             LocalDate out;
 
             while (true) {
                 while (true) {
-                    System.out.print("Check-in (yyyy-MM-dd): ");
+                    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    System.out.print("Check-in (dd-MM-yyyy): ");
                     String line = sc.nextLine().trim();
                     try {
-                        in = LocalDate.parse(line);
+                        in = LocalDate.parse(line, fmt);
                     } catch (DateTimeParseException e) {
                         System.out.println("Invalid date format or out-of-range. Try again.");
                         continue;
                     }
-                    if (in.isBefore(today)) {
+                    if (in.isBefore(today.toLocalDate())) {
                         System.out.println("Date is in the past. Please choose a future date.");
                         continue;
                     }
@@ -326,7 +329,6 @@ public class HotelsView {
                 System.out.println("Payment failed. Reservation not created.");
                 return;
             }
-            hotel.updateMatrixForBooking(in, out);
             System.out.println("\nBooking confirmed.");
             if (payer instanceof CreditCardPayment) {
                 paymentRef = ((CreditCardPayment) payer).getCardNumber().length() > 4 ?
