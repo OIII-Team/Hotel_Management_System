@@ -33,6 +33,9 @@ public class User
     public User()
     {
         this.bookingStack = new UsersBookingStack();
+        this.name = "";
+        this.email = "";
+        this.ID = "";
     }
 
     public void setName(String name)

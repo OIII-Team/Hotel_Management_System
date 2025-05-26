@@ -130,7 +130,7 @@ public class Booking
         hotel.removeBooking(this);
     }
 
-    //For upcoming bookings method in User
+    //Mainly For upcoming bookings method in User and more
     public String toString() {
         return String.format("%s | %s → %s | ₪%.0f",
                 hotel.getName(), checkIn, checkOut, totalPrice);
