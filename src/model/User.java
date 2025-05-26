@@ -98,7 +98,7 @@ public class User
 
     //Method for registering a new user or logging in an existing one
     public static User loginOrRegister(UsersList users) {
-        System.out.println("Welcome to User's login page!");
+        System.out.println("\nWelcome to User's login page!");
         System.out.print("Enter your ID (9 digits): ");
         Scanner scanner = new Scanner(System.in);
         String id = scanner.nextLine();
@@ -250,7 +250,7 @@ public class User
 
     public void viewNotifications(Scanner sc) {
         if (waitlistNotifications.isEmpty()) {
-            System.out.println("You have no notifications.");
+            System.out.println("\nYou have no notifications.");
             return;
         }
 

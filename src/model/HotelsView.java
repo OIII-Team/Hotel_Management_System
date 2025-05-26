@@ -25,7 +25,7 @@ public class HotelsView {
     /* ---------------- run ---------------- */
     public void run(Scanner sc, User user) {
         this.currentUser = user;
-
+        System.out.println();
         Region region = chooseRegion(sc);
         if (region == null) return;
         this.selectedRegion = region;
@@ -80,9 +80,10 @@ public class HotelsView {
             if (resp.equalsIgnoreCase("yes"))
             {
                 chosen.printReviewList();
+                System.out.println();
             } else if (resp.equalsIgnoreCase("no")) {
             } else {
-                System.out.println("Invalid response. Returning to the options list...");
+                System.out.println("\nInvalid response. Returning to the options list...");
                 return;
             }
             System.out.print("Would you like to book a reservation? (yes/no) ");

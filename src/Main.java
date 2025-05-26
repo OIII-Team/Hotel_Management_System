@@ -4,6 +4,7 @@ import model.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.Scanner;
 
 public class Main
 {
@@ -47,7 +48,7 @@ public class Main
         Tsimmer tsimmer2 = new Tsimmer("Mitzpe Ramon Tsimmer", Region.SOUTH, new Location(Region.SOUTH, City.MITZPE_RAMON, "Desert Path 1"), 250.0, new Amenities[]{Amenities.PARKING}, 3, 2, 4.1, bookings, hotelTree, reviewList, false, true, "Desert");
         hotelTree.addHotel(tsimmer2);
 
-        // Initialize the human objects
+        // Initialize the human objects - logging in
         Admin admin = new Admin("123456789");
         User user = new User("ofer avioz", "oferavioz@gmail.com", "212052385");
 
@@ -63,6 +64,49 @@ public class Main
           // Payment creation for booking
         Payment payment1 = new CreditCardPayment(booking1.getTotalPrice(), LocalDateTime.now(), "1234123412341234", "123", YearMonth.of(2025, 12));
         booking1.create(booking1, payment1);  // Create also does push to the stack and add to the booking list
+
+        // == Menu Functionality ==
+
+        // View Hotel functionality - user's perspective
+        //new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user);
+
+        // Search hotels by name - user's perspective
+        //hotelTree.searchHotelByName(new Scanner("The Scots hotel\nyes"), hotelTree);
+
+        // Cancel last booking - user's perspective
+        //user.cancelLastBooking(new Scanner("yes"));
+
+        // View upcoming bookings - user's perspective
+        //user.viewUpcomingBookings();
+
+        // Leave a review - user's perspective
+        //user.leaveReview(new Scanner(System.in), hotelTree);
+
+        // View notifications - user's perspective
+        //user.viewNotifications(new Scanner(System.in));
+
+        // Add hotel - admin's perspective
+        //admin.addHotelInteractive(new java.util.Scanner(System.in), hotelTree);
+
+        // Remove hotel - admin's perspective
+        //admin.removeHotelInteractive(new java.util.Scanner(System.in), hotelTree);
+
+        // View all users - admin's perspective, an inner method of the UsersList class - used in the Admin menu
+        //users.printUsers();
+
+        // View Hotels by region - admin's perspective
+        //admin.viewHotelsByRegion(hotelTree);
+
+        // == General Functionality ==
+
+        // View hotel's availability matrix (by year and month)
+        //hotel1.displayAvailabilityMatrix(2025, 5);
+
+        // view hotel's availability matrix after booking the limited number of rooms
+        //Booking booking2 = new Booking(user, hotel1, LocalDate.now(), LocalDate.now().plusDays(3));
+        //booking2.create(booking2, payment1);
+        //hotel1.displayAvailabilityMatrix(2025, 5);
+        // Now we can see that the availability matrix has been updated after the booking - there are X's in the booked dates
 
 
         menu.run();

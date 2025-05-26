@@ -66,6 +66,7 @@ public class UsersList
             System.out.println(current.user);
             current = current.next;
         }
+        System.out.println("\n");
     }
 
 }

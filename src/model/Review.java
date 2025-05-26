@@ -46,6 +46,7 @@ public class Review
         System.out.println("Rating: " + rating);
         System.out.println("Comment: " + comment);
         System.out.println("Date: " + commentDate.format(fmt));
+        //System.out.println("\n");
     }
 
     public static Review create(User userName, Hotel hotel, int rating, String comment, LocalDateTime when){

@@ -340,7 +340,6 @@ public class Hotel
             else
                 System.out.println("No reviews available for this hotel.");
         }
-        System.out.println("\n");
     }
 }
 

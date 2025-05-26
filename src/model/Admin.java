@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import structures.HotelTree;
 import structures.BookingList;
 import structures.ReviewList;
+import structures.UsersList;
 
 public class Admin extends User
 {
