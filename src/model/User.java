@@ -6,7 +6,6 @@ import structures.UsersList;
 import structures.HotelTree;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,14 +37,16 @@ public class User
         this.ID = "";
     }
 
-    public void setName(String name)
+    public boolean setName(String name)
     {
         if (name != null && name.matches("[a-zA-Z ]+"))
         {
             this.name = name;
+            return true;
         } else
         {
             System.out.println("Invalid name. Only letters and spaces are allowed.");
+            return false;
         }
     }
 
@@ -54,14 +55,16 @@ public class User
         return name;
     }
 
-    public void setEmail(String email)
+    public boolean setEmail(String email)
     {
         if (email != null && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$"))
         {
             this.email = email;
+            return true;
         } else
         {
             System.out.println("Invalid email format.");
+            return false;
         }
     }
 
@@ -70,14 +73,16 @@ public class User
         return email;
     }
 
-    public void setID(String ID)
+    public boolean setID(String ID)
     {
         if (ID != null && ID.matches("\\d{9}"))
         {
             this.ID = ID;
+            return true;
         } else
         {
             System.out.println("Invalid ID. please enter a numeric ID, 9 digits only.");
+            return false;
         }
     }
 
@@ -98,14 +103,23 @@ public class User
 
     //Method for registering a new user or logging in an existing one
     public static User loginOrRegister(UsersList users) {
-        System.out.println("\nWelcome to User's login page!");
-        System.out.print("Enter your ID (9 digits): ");
         Scanner scanner = new Scanner(System.in);
-        String id = scanner.nextLine();
+        System.out.println("\nWelcome to User's login page!");
+
+        String userId;
+        while (true) {
+            System.out.print("Enter your ID (9 digits): ");
+            userId = scanner.nextLine();
+            if (userId.matches("\\d{9}")) {
+                break;
+            } else {
+                System.out.println("Invalid ID. Please enter a numeric ID, 9 digits only.");
+            }
+        }
 
         UsersList.UserNode current = users.getHead();
         while (current != null) {
-            if (current.user.getID().equals(id)) {
+            if (current.user.getID().equals(userId)) {
                 System.out.println("Welcome back, " + current.user.getName() + "!");
                 return current.user;
             }
@@ -114,25 +128,18 @@ public class User
 
         System.out.println("User not found. Please register:");
         User newUser = new User();
-
-        newUser.setID(id);
-        while (newUser.getID() == null) {
-            id = scanner.nextLine();
-            newUser.setID(id);
-        }
+        newUser.setID(userId);
 
         while (true) {
             System.out.print("Enter your full name: ");
             String name = scanner.nextLine();
-            newUser.setName(name);
-            if (newUser.getName() != null) break;
+            if (newUser.setName(name)) break;
         }
 
         while (true) {
             System.out.print("Enter your email: ");
             String email = scanner.nextLine();
-            newUser.setEmail(email);
-            if (newUser.getEmail() != null) break;
+            if (newUser.setEmail(email)) break;
         }
 
         users.addUser(newUser);
@@ -268,7 +275,6 @@ public class User
                 if (!resp.equalsIgnoreCase("yes")) {
                     System.out.println("OK, your booking request is cancelled.");
                     it.remove();
-                    req.getUser().removeWaitlistNotification(req);
                     continue;
                 }
 
@@ -287,12 +293,9 @@ public class User
                         System.out.print("CVV (3 digits): ");
                         String cvv = sc.nextLine().trim();
                         System.out.print("Expiry (MM/yyyy): ");
-                        String[] parts = sc.nextLine().split("/");
-                        YearMonth exp = YearMonth.of(
-                                Integer.parseInt(parts[1].trim()),
-                                Integer.parseInt(parts[0].trim())
-                        );
-                        payer = new CreditCardPayment(amount, LocalDateTime.now(), cardNum, cvv, exp);
+                        String expStr = sc.nextLine().trim();
+
+                        payer = new CreditCardPayment(amount, LocalDateTime.now(), cardNum, cvv, expStr);
                         paymentRef = cardNum.length() > 4 ? cardNum.substring(cardNum.length() - 4) : cardNum;
                         break;
                     } else if (choice.equals("2")) {
@@ -301,8 +304,6 @@ public class User
                         System.out.print("PayPal Account ID for confirmation: ");
                         String id = sc.nextLine().trim();
                         payer = new PaypalPayment(amount, LocalDateTime.now(), email, id);
-                        int at = email.indexOf('@');
-                        paymentRef = email.substring(0, Math.min(at, 4));
                         break;
                     } else {
                         System.out.println("Invalid choice — please select 1 or 2.");
@@ -311,6 +312,7 @@ public class User
 
                 Booking booking =new Booking(this, hotel, in, out);
                 booking.create(booking, payer);
+                it.remove();
                 req.getUser().removeWaitlistNotification(req);
                 booking.getHotel().updateMatrixForBooking(in, out);
                 if (booking == null) {
@@ -321,12 +323,14 @@ public class User
                 if (payer instanceof CreditCardPayment) {
                     System.out.println("Credit card ends with : XXXX-XXXX-XXXX-" + paymentRef);
                 } else if (payer instanceof PaypalPayment) {
-                    System.out.println("PayPal account ref : " + paymentRef + "XX@" + email.substring(email.indexOf('@')));
+                    int at = ((PaypalPayment) payer).getPayerEmail().indexOf('@');
+                    paymentRef = ((PaypalPayment) payer).getPayerEmail().substring(0, Math.min(at,4));
+                    String domain = ((PaypalPayment) payer).getPayerEmail().substring(((PaypalPayment) payer).getPayerEmail().indexOf('@'));
+                    System.out.println("PayPal account ref : " + paymentRef + "XX@" + domain);
                 }
                 System.out.println("Thank you! see you soon :)\n");
 
                 booking.printBookingDetails();
-                it.remove();
             } else {
                 System.out.println("-> Still waiting for availability.");
             }

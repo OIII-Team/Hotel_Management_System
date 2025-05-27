@@ -40,7 +40,6 @@ public class UsersBookingStack
             System.out.println("(No bookings found)");
             return;
         }
-        System.out.println("User's bookings (latest first):");
         usersBookingsStack.forEach(b -> {System.out.print("  - "); System.out.println(b); });
     }
 }

@@ -280,36 +280,11 @@ public class HotelsView {
                     cardNum = sc.nextLine().trim();
                     System.out.print("CVV (3 digits): ");
                     String cvv = sc.nextLine().trim();
+                    System.out.print("Expiry (MM/yyyy): ");
+                    String expStr = sc.nextLine().trim();
 
-                    YearMonth exp;
-                    while (true) {
-                        System.out.print("Expiry (MM/yyyy): ");
-                        String[] parts = sc.nextLine().trim().split("/");
-                        if (parts.length != 2) {
-                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
-                            continue;
-                        }
-                        int m, y;
-                        try {
-                            m = Integer.parseInt(parts[0].trim());
-                            y = Integer.parseInt(parts[1].trim());
-                        } catch (NumberFormatException e) {
-                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
-                            continue;
-                        }
-                        if (m < 1 || m > 12) {
-                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
-                            continue;
-                        }
-                        exp = YearMonth.of(y, m);
-                        if (exp.isBefore(YearMonth.now())) {
-                            System.out.println(new HotelSystemPaymentExceptions.DateException.ExpiredException().getMessage());
-                            continue;
-                        }
-                        break;
-                    }
-                    payer = new CreditCardPayment(total, today, cardNum, cvv, exp);
-                    break;
+                   payer = new CreditCardPayment(total, today, cardNum, cvv, expStr);
+                   break;
                 }
                 if (choice == 2) {
                     System.out.print("PayPal Email: ");
@@ -321,6 +296,12 @@ public class HotelsView {
                 }
                 System.out.println("Invalid choice — please select 1 or 2.");
             }
+
+            if (!payer.processPayment(total)) {
+                System.out.println("Payment processing failed. Booking cancelled.");
+                return;
+            }
+
 
             Booking booking = new Booking(currentUser, hotel, in, out);
             booking.create(booking, payer);

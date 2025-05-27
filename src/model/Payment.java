@@ -45,7 +45,7 @@ public abstract class Payment implements Payable
         return String.format("Total price: ₪%.2f, completed on %s, by %s", amount, paymentDate.format(fmt), getClassName());
     }
 
-    public abstract boolean processPayment(User user, double netAmount);
+    public abstract boolean processPayment(double netAmount);
     protected abstract void validatePayment() throws HotelSystemPaymentExceptions;
 
 }

@@ -58,7 +58,7 @@ public class Booking
         double fee = payer.calculateFee(total);
         double baseAmount = total - fee;
 
-        boolean success = payer.processPayment(user, baseAmount);
+        boolean success = payer.processPayment(baseAmount);
         if (!success)
         {
             b.cancelBooking();

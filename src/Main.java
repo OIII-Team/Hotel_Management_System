@@ -62,7 +62,7 @@ public class Main
         // Booking creation
         Booking booking1 = new Booking(user, hotel1, LocalDate.now(), LocalDate.now().plusDays(3));
           // Payment creation for booking
-        Payment payment1 = new CreditCardPayment(booking1.getTotalPrice(), LocalDateTime.now(), "1234123412341234", "123", YearMonth.of(2025, 12));
+        Payment payment1 = new CreditCardPayment(booking1.getTotalPrice(), LocalDateTime.now(), "1234123412341234", "123", "12/2025");
         booking1.create(booking1, payment1);  // Create also does push to the stack and add to the booking list
 
         // == Menu Functionality ==

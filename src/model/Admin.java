@@ -153,6 +153,7 @@ public class Admin extends User
 
     public void viewHotelsByRegion(HotelTree tree)
     {
+        System.out.println();
         Region.printRegionOptions();
         Region region = null;
         Scanner scanner = new Scanner(System.in);

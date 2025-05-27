@@ -1,7 +1,6 @@
 package model;
 import exceptions.HotelSystemPaymentExceptions;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -26,7 +25,7 @@ public class PaypalPayment extends Payment
     }
 
 
-    public boolean processPayment(User user, double netAmount) {
+    public boolean processPayment(double netAmount) {
         Scanner sc = new Scanner(System.in);
         int maxAttempts = 3;
         int attempts = 0;

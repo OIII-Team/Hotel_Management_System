@@ -2,6 +2,6 @@ package model;
 
 public interface Payable
 {
-    boolean processPayment(User user, double amount);
+    boolean processPayment(double amount);
     double calculateFee(double amount);
 }

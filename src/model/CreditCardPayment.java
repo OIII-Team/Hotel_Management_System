@@ -9,13 +9,14 @@ public class CreditCardPayment extends Payment
 {
     private String cardNumber;
     private String cvv;
-    private YearMonth expirationDate;
+    private String expirationDateString;
 
-    public CreditCardPayment(double amount, LocalDateTime paymentDate, String cardNumber, String cvv, YearMonth expirationDate) {
+    public CreditCardPayment(double amount, LocalDateTime paymentDate, String cardNumber, String cvv, String expirationDateString)
+    {
         super(amount, paymentDate);
         this.cardNumber = cardNumber;
         this.cvv = cvv;
-        this.expirationDate = expirationDate;
+        this.expirationDateString = expirationDateString;
     }
 
     public void validatePayment() throws HotelSystemPaymentExceptions
@@ -24,13 +25,25 @@ public class CreditCardPayment extends Payment
             throw new HotelSystemPaymentExceptions.InvalidCardNumberException();
         if (!cvv.matches("\\d{3}"))
             throw new HotelSystemPaymentExceptions.InvalidCVVException();
-        if (!expirationDate.toString().matches("\\d{4}-\\d{2}"))
+        try {
+            String[] parts = expirationDateString.split("/");
+            if (parts.length != 2)
+                throw new HotelSystemPaymentExceptions.DateException.InvalidFormatException();
+
+            int m = Integer.parseInt(parts[0].trim());
+            int y = Integer.parseInt(parts[1].trim());
+            if (m < 1 || m > 12)
+                throw new HotelSystemPaymentExceptions.DateException.InvalidFormatException();
+
+            YearMonth candidate = YearMonth.of(y, m);
+            if (candidate.isBefore(YearMonth.now()))
+                throw new HotelSystemPaymentExceptions.DateException.ExpiredException();
+        } catch (NumberFormatException e) {
             throw new HotelSystemPaymentExceptions.DateException.InvalidFormatException();
-        if (expirationDate.isBefore(YearMonth.now()))
-            throw new HotelSystemPaymentExceptions.DateException.ExpiredException();
+        }
     }
 
-    public boolean processPayment(User user, double netAmount)
+    public boolean processPayment(double netAmount)
     {
         Scanner sc = new Scanner(System.in);
         int maxAttempts = 3;
@@ -52,69 +65,12 @@ public class CreditCardPayment extends Payment
                 System.out.println(ex.getMessage());
                 System.out.print("Re-enter CVV: ");
                 cvv = sc.nextLine().trim();
-            } catch (HotelSystemPaymentExceptions.DateException.InvalidFormatException ex)
-            {
+            } catch (HotelSystemPaymentExceptions.DateException ex) {
                 System.out.println(ex.getMessage());
-                while (true)
-                {
-                    System.out.print("Re-enter Expiry (MM/yyyy): ");
-                    String[] parts = sc.nextLine().trim().split("/");
-                    if (parts.length != 2)
-                    {
-                        System.out.println(ex.getMessage());
-                        continue;
-                    }
-                    try
-                    {
-                        int m = Integer.parseInt(parts[0].trim());
-                        int y = Integer.parseInt(parts[1].trim());
-                        if (m < 1 || m > 12)
-                        {
-                            System.out.println(ex.getMessage());
-                            continue;
-                        }
-                        expirationDate = YearMonth.of(y, m);
-                        break;
-                    } catch (NumberFormatException e)
-                    {
-                        System.out.println(ex.getMessage());
-                    }
-                }
-            } catch (HotelSystemPaymentExceptions.DateException.ExpiredException ex)
-            {
-                System.out.println(ex.getMessage());
-                while (true)
-                {
-                    System.out.print("Re-enter Expiry (MM/yyyy): ");
-                    String[] parts = sc.nextLine().trim().split("/");
-                    if (parts.length != 2)
-                    {
-                        System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
-                        continue;
-                    }
-                    try
-                    {
-                        int m = Integer.parseInt(parts[0].trim());
-                        int y = Integer.parseInt(parts[1].trim());
-                        if (m < 1 || m > 12)
-                        {
-                            System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
-                            continue;
-                        }
-                        YearMonth candidate = YearMonth.of(y, m);
-                        if (candidate.isBefore(YearMonth.now()))
-                        {
-                            System.out.println(ex.getMessage());
-                            continue;
-                        }
-                        expirationDate = candidate;
-                        break;
-                    } catch (NumberFormatException e)
-                    {
-                        System.out.println(new HotelSystemPaymentExceptions.DateException.InvalidFormatException().getMessage());
-                    }
-                }
+                System.out.print("Re-enter Expiry (MM/yyyy): ");
+                expirationDateString = sc.nextLine().trim();
             }
+
             attempts++;
             if (attempts >= maxAttempts) {
                 System.out.println("Maximum attempts reached.");
@@ -124,7 +80,6 @@ public class CreditCardPayment extends Payment
         }
         return false;
     }
-
 
     public String getCardNumber() {
         return cardNumber;
