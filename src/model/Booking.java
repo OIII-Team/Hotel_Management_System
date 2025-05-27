@@ -122,7 +122,7 @@ public class Booking
         System.out.println("Check-in: " + checkIn);
         System.out.println("Check-out: " + checkOut);
         System.out.println("Nights: " + getNights());
-        System.out.println(payer);
+        System.out.println(getPayer());
     }
 
     public void cancelBooking()

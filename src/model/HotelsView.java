@@ -308,7 +308,6 @@ public class HotelsView {
                         }
                         break;
                     }
-
                     payer = new CreditCardPayment(total, today, cardNum, cvv, exp);
                     break;
                 }
