@@ -56,7 +56,7 @@ public class Admin extends User
     public void addHotelInteractive(Scanner sc, HotelTree tree)
     {
         System.out.println("--Add New Hotel--");
-        System.out.print("Name: ");
+        System.out.println("Name: ");
         String name = sc.nextLine();
 
         //Region
@@ -84,19 +84,19 @@ public class Admin extends User
             if (selectedCity == null)
                 System.out.println("Invalid city, try again.");
         }
-        System.out.print("Address: ");
+        System.out.println("Address: ");
         String address = sc.nextLine();
 
         //Price+Rooms
-        System.out.print("Price per night: ");
+        System.out.println("Price per night: ");
         double price = sc.nextDouble();
         sc.nextLine();
-        System.out.print("Total rooms: ");
+        System.out.println("Total rooms: ");
         int totalRooms = sc.nextInt();
         sc.nextLine();
 
         //Amenities
-        System.out.print("Amenities (comma-separated): ");
+        System.out.println("Amenities (comma-separated): ");
         String amenitiesInput = sc.nextLine();
         String[] tokens = amenitiesInput.split(",");
         Amenities[] amenities = new Amenities[tokens.length];
@@ -104,10 +104,10 @@ public class Admin extends User
             amenities[i] = Amenities.fromString(tokens[i].trim());
 
         //Capacity+Rating
-        System.out.print("Max capacity: ");
+        System.out.println("Max capacity: ");
         int maxCapacity = sc.nextInt();
         sc.nextLine();
-        System.out.print("Rating: ");
+        System.out.println("Rating: ");
         double rating = sc.nextDouble();
         sc.nextLine();
 
@@ -134,7 +134,7 @@ public class Admin extends User
         int cityChoice = sc.nextInt();
         sc.nextLine();
         City selectedCity = City.getCityFromChoice(selectedRegion, cityChoice);
-        System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
+        System.out.println("Are you sure you want to remove the hotel? (yes/no): ");
         String confirmation = sc.nextLine();
         if (!confirmation.equalsIgnoreCase("yes"))
         {
@@ -151,12 +151,11 @@ public class Admin extends User
         }
     }
 
-    public void viewHotelsByRegion(HotelTree tree)
+    public void viewHotelsByRegion(HotelTree tree, Scanner scanner)
     {
         System.out.println();
         Region.printRegionOptions();
         Region region = null;
-        Scanner scanner = new Scanner(System.in);
         region = Region.getRegionFromChoice(scanner.nextInt());
 
         List<Hotel> view = new ArrayList<>(tree.getHotels(region, null));

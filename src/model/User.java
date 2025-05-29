@@ -207,27 +207,27 @@ public class User
         }
 
         System.out.print("\n-- Leave a Review for " + hotel.getName() + " --\n");
-        System.out.print("Your rating (1–5): ");
+        System.out.println("Your rating (1–5): ");
         int rating;
         while (true) {
             String line = sc.nextLine().trim();
             try {
                 rating = Integer.parseInt(line);
             } catch (NumberFormatException e) {
-                System.out.print("Invalid input. Enter a number 1–5: ");
+                System.out.println("Invalid input. Enter a number 1–5: ");
                 continue;
             }
             if (rating >= 1 && rating <= 5) break;
-            System.out.print("Invalid range. Enter 1–5: ");
+            System.out.println("Invalid range. Enter 1–5: ");
         }
 
-        System.out.print("Your comment: ");
+        System.out.println("Your comment: ");
         String comment = sc.nextLine().trim();
         while (comment.isBlank()) {
-            System.out.print("Cannot be empty. Try again: ");
+            System.out.println("Cannot be empty. Try again: ");
             comment = sc.nextLine().trim();
         }
-        System.out.print("Are you sure you want to submit this review? (yes/no) ");
+        System.out.println("Are you sure you want to submit this review? (yes/no) ");
         String confirmation = sc.nextLine().trim();
         if (!confirmation.equalsIgnoreCase("yes")) {
             System.out.println("Review submission cancelled.");
@@ -256,8 +256,10 @@ public class User
     }
 
     public void viewNotifications(Scanner sc) {
+        System.out.println("\n=== Notifications Center ===\n");
+
         if (waitlistNotifications.isEmpty()) {
-            System.out.println("\nYou have no notifications.");
+            System.out.println("You have no notifications.");
             return;
         }
 
@@ -270,7 +272,7 @@ public class User
             System.out.printf("%s: %s → %s%n", hotel.getName(), in, out);
 
             if (hotel.isRoomAvailable(in, out)) {
-                System.out.print("Room is available! Complete payment and book? (yes/no): ");
+                System.out.println("Room is available! Complete payment and book? (yes/no): ");
                 String resp = sc.nextLine().trim();
                 if (!resp.equalsIgnoreCase("yes")) {
                     System.out.println("OK, your booking request is cancelled.");
@@ -288,20 +290,20 @@ public class User
                     String choice = sc.nextLine().trim();
 
                     if (choice.equals("1")) {
-                        System.out.print("Card Number (16 digits): ");
+                        System.out.println("Card Number (16 digits): ");
                         String cardNum = sc.nextLine().trim();
-                        System.out.print("CVV (3 digits): ");
+                        System.out.println("CVV (3 digits): ");
                         String cvv = sc.nextLine().trim();
-                        System.out.print("Expiry (MM/yyyy): ");
+                        System.out.println("Expiry (MM/yyyy): ");
                         String expStr = sc.nextLine().trim();
 
                         payer = new CreditCardPayment(amount, LocalDateTime.now(), cardNum, cvv, expStr);
                         paymentRef = cardNum.length() > 4 ? cardNum.substring(cardNum.length() - 4) : cardNum;
                         break;
                     } else if (choice.equals("2")) {
-                        System.out.print("PayPal Email: ");
+                        System.out.println("PayPal Email: ");
                         String email = sc.nextLine().trim();
-                        System.out.print("PayPal Account ID for confirmation: ");
+                        System.out.println("PayPal Account ID for confirmation: ");
                         String id = sc.nextLine().trim();
                         payer = new PaypalPayment(amount, LocalDateTime.now(), email, id);
                         break;

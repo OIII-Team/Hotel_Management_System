@@ -37,6 +37,7 @@ public class HotelsView {
         }
 
         applyFilters(sc, view);
+        System.out.println();
         applySort(sc, view);
 
 
@@ -60,7 +61,7 @@ public class HotelsView {
         System.out.println("\n==== Tsimmers ====");
         printList(tsimmers, (hotels.size() + 1));
 
-            System.out.print("\nSelect hotel/tsimmer to view its details: ");
+            System.out.println("\nSelect hotel/tsimmer to view its details: ");
             int idx = readInt(sc);
             if (idx < 1 || idx > hotels.size() + tsimmers.size()) break;
             Hotel chosen;
@@ -109,7 +110,7 @@ public class HotelsView {
         /* ---------- price ---------- */
         double maxPrice;
         while (true) {
-            System.out.print("Max price per night (0 = skip): ");
+            System.out.println("Max price per night (0 = skip): ");
             try {
                 maxPrice = Double.parseDouble(sc.nextLine().trim());
                 if (maxPrice >= 0) break;
@@ -124,7 +125,7 @@ public class HotelsView {
         /* ---------- rating ---------- */
         double minRating;
         while (true) {
-            System.out.print("Min rating (0–5, 0 = skip): ");
+            System.out.println("Min rating (0–5, 0 = skip): ");
             try {
                 minRating = Double.parseDouble(sc.nextLine().trim());
                 if (minRating >= 0 && minRating <= 5) break;
@@ -193,7 +194,7 @@ public class HotelsView {
             if (line.equalsIgnoreCase("no")) {
                 break;
             }
-            System.out.print("Invalid response. Please enter 'yes' or 'no': ");
+            System.out.println("Invalid response. Please enter 'yes' or 'no': ");
         }
     }
 
@@ -201,7 +202,7 @@ public class HotelsView {
        helper
        ===================================================== */
     private void applySort(Scanner sc, List<Hotel> list) {
-        System.out.print("Sort by (1=price↑ 2=price↓ 3=rating↑ 4=rating↓ 0=none): ");
+        System.out.println("Sort by (1=price↑ 2=price↓ 3=rating↑ 4=rating↓ 0=none): ");
         switch (readInt(sc)) {
             case 1 -> list.sort(Comparator.comparingDouble(Hotel::getPricePerNight));
             case 2 -> list.sort(Comparator.comparingDouble(Hotel::getPricePerNight).reversed());
@@ -223,7 +224,8 @@ public class HotelsView {
             while (true) {
                 while (true) {
                     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                    System.out.print("Check-in (dd-MM-yyyy): ");
+                    System.out.println();
+                    System.out.println("Check-in (dd-MM-yyyy): ");
                     String line = sc.nextLine().trim();
                     try {
                         in = LocalDate.parse(line, fmt);
@@ -245,7 +247,7 @@ public class HotelsView {
                 if (!hotel.isRoomAvailable(in, out)) {
                     System.out.println("Sorry, the hotel is full for these dates.");
                     hotel.displayAvailabilityMatrix(in.getYear(), in.getMonthValue());
-                    System.out.print("Would you like to pick a different check-in date? (yes to retry / no to join waitlist): ");
+                    System.out.println("Would you like to pick a different check-in date? (yes to retry / no to join waitlist): ");
                     String resp = sc.nextLine().trim();
                     if (resp.equalsIgnoreCase("yes")) {
                         continue;
@@ -276,20 +278,20 @@ public class HotelsView {
             while (true) {
                 int choice = readInt(sc);
                 if (choice == 1) {
-                    System.out.print("Card Number (16 digits): ");
+                    System.out.println("Card Number (16 digits): ");
                     cardNum = sc.nextLine().trim();
-                    System.out.print("CVV (3 digits): ");
+                    System.out.println("CVV (3 digits): ");
                     String cvv = sc.nextLine().trim();
-                    System.out.print("Expiry (MM/yyyy): ");
+                    System.out.println("Expiry (MM/yyyy): ");
                     String expStr = sc.nextLine().trim();
 
                    payer = new CreditCardPayment(total, today, cardNum, cvv, expStr);
                    break;
                 }
                 if (choice == 2) {
-                    System.out.print("PayPal Email: ");
+                    System.out.println("PayPal Email: ");
                     email = sc.nextLine().trim();
-                    System.out.print("PayPal Account ID for confirmation: ");
+                    System.out.println("PayPal Account ID for confirmation: ");
                     String id = sc.nextLine().trim();
                     payer = new PaypalPayment(total, today, email, id);
                     break;
@@ -297,7 +299,7 @@ public class HotelsView {
                 System.out.println("Invalid choice — please select 1 or 2.");
             }
 
-            if (!payer.processPayment(total)) {
+            if (!payer.processPayment(total, sc)) {
                 System.out.println("Payment processing failed. Booking cancelled.");
                 return;
             }

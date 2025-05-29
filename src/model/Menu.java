@@ -93,7 +93,7 @@ public class Menu {
             switch (c) {
                 case 1 -> admin.addHotelInteractive(sc, hotelTree);
                 case 2 -> admin.removeHotelInteractive(sc, hotelTree);
-                case 3 -> admin.viewHotelsByRegion(hotelTree);
+                case 3 -> admin.viewHotelsByRegion(hotelTree, sc);
                 case 4 -> users.printUsers();
                 case 0 -> { return; }
                 default -> System.out.println("Invalid input.");

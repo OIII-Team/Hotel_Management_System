@@ -25,7 +25,7 @@ public class PaypalPayment extends Payment
     }
 
 
-    public boolean processPayment(double netAmount) {
+    public boolean processPayment(double netAmount, Scanner scanner){
         Scanner sc = new Scanner(System.in);
         int maxAttempts = 3;
         int attempts = 0;
@@ -37,7 +37,7 @@ public class PaypalPayment extends Payment
             } catch (HotelSystemPaymentExceptions e) {
                 System.out.println(e.getMessage());
 
-                if (attempts >= maxAttempts - 1) {
+                if (attempts >= maxAttempts) {
                     System.out.println("Maximum attempts reached. Payment cancelled.");
                     return false;
                 }
