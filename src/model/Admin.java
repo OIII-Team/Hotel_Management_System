@@ -26,11 +26,12 @@ public class Admin extends User
 
     public static Admin adminLogin(Scanner scanner)
     {
-        System.out.println("\nWelcome to the Admin Login Page!");
+        System.out.println("\n\nWelcome to the Admin Login Page!");
         while (true)
         {
             System.out.print("Enter admin password: ");
             String inputPassword = scanner.nextLine();
+            System.out.println(inputPassword);
             String correct = "123456789";
 
             boolean match = inputPassword.length() == correct.length();
@@ -55,9 +56,10 @@ public class Admin extends User
 
     public void addHotelInteractive(Scanner sc, HotelTree tree)
     {
-        System.out.println("--Add New Hotel--");
-        System.out.println("Name: ");
+        System.out.println("\n---------------------Add Hotel---------------------\n");
+        System.out.print("Name: ");
         String name = sc.nextLine();
+        System.out.println(name);
 
         //Region
         Region selectedRegion = null;
@@ -67,6 +69,7 @@ public class Admin extends User
             Region.printRegionOptions();
             int regChoice = sc.nextInt();
             sc.nextLine();
+            System.out.println(regChoice);
             selectedRegion = Region.getRegionFromChoice(regChoice);
             if (selectedRegion == null)
                 System.out.println("Invalid region, try again.");
@@ -80,36 +83,43 @@ public class Admin extends User
             City.printCityOptions(selectedRegion);
             int cityChoice = sc.nextInt();
             sc.nextLine();
+            System.out.println(cityChoice);
             selectedCity = City.getCityFromChoice(selectedRegion, cityChoice);
             if (selectedCity == null)
                 System.out.println("Invalid city, try again.");
         }
-        System.out.println("Address: ");
+        System.out.print("Address: ");
         String address = sc.nextLine();
+        System.out.println(address);
 
         //Price+Rooms
-        System.out.println("Price per night: ");
+        System.out.print("Price per night: ");
         double price = sc.nextDouble();
         sc.nextLine();
-        System.out.println("Total rooms: ");
+        System.out.println(price);
+        System.out.print("Total rooms: ");
         int totalRooms = sc.nextInt();
         sc.nextLine();
+        System.out.println(totalRooms);
 
         //Amenities
-        System.out.println("Amenities (comma-separated): ");
+        System.out.print("Amenities (comma-separated): ");
         String amenitiesInput = sc.nextLine();
+        System.out.println(amenitiesInput);
         String[] tokens = amenitiesInput.split(",");
         Amenities[] amenities = new Amenities[tokens.length];
         for (int i = 0; i < tokens.length; i++)
             amenities[i] = Amenities.fromString(tokens[i].trim());
 
         //Capacity+Rating
-        System.out.println("Max capacity: ");
+        System.out.print("Max capacity: ");
         int maxCapacity = sc.nextInt();
         sc.nextLine();
-        System.out.println("Rating: ");
+        System.out.println(maxCapacity);
+        System.out.print("Rating: ");
         double rating = sc.nextDouble();
         sc.nextLine();
+        System.out.println(rating);
 
         Location loc = new Location(selectedRegion, selectedCity, address);
         Hotel hotel = new Hotel(name, selectedRegion, loc, price,
@@ -121,21 +131,25 @@ public class Admin extends User
 
     public void removeHotelInteractive(Scanner sc, HotelTree tree)
     {
-        System.out.println("\n--Remove Hotel--");
+        System.out.println("\n---------------------Remove Hotel---------------------\n");
         System.out.print("Enter hotel name to remove: ");
         String name = sc.nextLine();
+        System.out.println(name);
         System.out.println("Enter hotel's region:");
         Region.printRegionOptions();
         int regChoice = sc.nextInt();
         sc.nextLine();
+        System.out.println(regChoice);
         Region selectedRegion = Region.getRegionFromChoice(regChoice);
         System.out.println("Enter hotel's city:");
         City.printCityOptions(selectedRegion);
         int cityChoice = sc.nextInt();
         sc.nextLine();
+        System.out.println(cityChoice);
         City selectedCity = City.getCityFromChoice(selectedRegion, cityChoice);
-        System.out.println("Are you sure you want to remove the hotel? (yes/no): ");
+        System.out.print("Are you sure you want to remove the hotel? (yes/no): ");
         String confirmation = sc.nextLine();
+        System.out.println(confirmation);
         if (!confirmation.equalsIgnoreCase("yes"))
         {
             System.out.println("Hotel removal cancelled.");
@@ -153,15 +167,18 @@ public class Admin extends User
 
     public void viewHotelsByRegion(HotelTree tree, Scanner scanner)
     {
+        System.out.println("\n---------------------View Hotels By Region---------------------");
         System.out.println();
         Region.printRegionOptions();
-        Region region = null;
-        region = Region.getRegionFromChoice(scanner.nextInt());
+        int regChoice = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println(regChoice);
+        Region region = Region.getRegionFromChoice(regChoice);
 
         List<Hotel> view = new ArrayList<>(tree.getHotels(region, null));
         if (view.isEmpty())
         {
-            System.out.println("No hotels/tsimmers in this region.");
+            System.out.println("\nNo hotels/tsimmers in this region.");
             return;
         }
 
@@ -181,7 +198,7 @@ public class Admin extends User
             }
             if (tsimmers.isEmpty())
             {
-                System.out.println("No tsimmers match your criteria.");
+                System.out.println("\nNo tsimmers in this region.");
                 return;
             }
             System.out.println("\n==== Tsimmers ====");

@@ -133,6 +133,7 @@ public class HotelTree
 
     public void searchHotelByName(Scanner scanner, HotelTree tree)
     {
+        System.out.println("\n---------------------Search Hotel By Name---------------------");
         System.out.print("\nEnter hotel's name to search: ");
         String hotelName = scanner.nextLine().trim();
         Hotel hotel = tree.findHotel(hotelName);

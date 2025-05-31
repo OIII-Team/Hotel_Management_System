@@ -25,7 +25,6 @@ public class HotelsView {
     /* ---------------- run ---------------- */
     public void run(Scanner sc, User user) {
         this.currentUser = user;
-        System.out.println();
         Region region = chooseRegion(sc);
         if (region == null) return;
         this.selectedRegion = region;

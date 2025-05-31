@@ -22,15 +22,10 @@ public class Menu {
         User.setWaitlist(waitList);
     }
 
-    public void run() {
-        Scanner scanner = new Scanner(System.in);
+    public void run(Scanner scanner) {
 
         while (true) {
-            System.out.println("\n=== Welcome to Hotel Management System! ===");
-            System.out.println("1. User");
-            System.out.println("2. Admin");
-            System.out.println("3. Exit");
-            System.out.print("Enter your choice: ");
+            printInitialMessage();
 
             if (!scanner.hasNextInt()) {
                 System.out.println("Invalid input.");
@@ -41,7 +36,7 @@ public class Menu {
             scanner.nextLine();
 
             switch (choice) {
-                case 1 -> { currentUser = User.loginOrRegister(users); userMenu(scanner); }
+                case 1 -> { currentUser = User.loginOrRegister(users, scanner); userMenu(scanner); }
                 case 2 -> { admin = Admin.adminLogin(scanner); adminMenu(scanner); }
                 case 3 -> { System.out.println("Good-bye!"); return; }
                 default -> System.out.println("Invalid choice.");
@@ -49,18 +44,18 @@ public class Menu {
         }
     }
 
+    public void printInitialMessage() {
+        System.out.println("\n=== Welcome to Hotel Management System! ===");
+        System.out.println("1. User");
+        System.out.println("2. Admin");
+        System.out.println("3. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
     /* ---------- user menu ---------- */
     private void userMenu(Scanner sc) {
         while (true) {
-            System.out.println("\n--- User Menu ---");
-            System.out.println("1. View hotels");
-            System.out.println("2. Search hotels by name");
-            System.out.println("3. Cancel last booking");
-            System.out.println("4. View my upcoming bookings");
-            System.out.println("5. Leave a review");
-            System.out.println("6. View my notifications");
-            System.out.println("0. Back");
-            System.out.print("Choice: ");
+            printUserMenu();
 
             int c = sc.nextInt();
             sc.nextLine();
@@ -75,6 +70,17 @@ public class Menu {
                 default -> System.out.println("Invalid input.");
             }
         }
+    }
+
+    public void printUserMenu() {
+        System.out.println("\n--- User Menu ---");
+        System.out.println("1. View hotels");
+        System.out.println("2. Search hotels by name");
+        System.out.println("3. Cancel last booking");
+        System.out.println("4. View my upcoming bookings");
+        System.out.println("5. Leave a review");
+        System.out.println("6. View my notifications");
+        System.out.println("0. Back");
     }
 
     /* ---------- admin menu ---------- */

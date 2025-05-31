@@ -333,12 +333,11 @@ public class Hotel
 
     public void printReviewList()
     {
+
         for (Review r : reviewList.asList())
         {
             if (r.getHotelName().equals(this.name))
                 r.printReview();
-            else
-                System.out.println("No reviews available for this hotel.");
         }
     }
 }

@@ -93,6 +93,7 @@ public class User
 
     public void viewUpcomingBookings()
     {
+        System.out.println("\n---------------------View Upcoming Bookings---------------------");
         if (bookingStack.isEmpty()) {
             System.out.println("\nYou have no upcoming bookings.");
             return;
@@ -102,14 +103,14 @@ public class User
     }
 
     //Method for registering a new user or logging in an existing one
-    public static User loginOrRegister(UsersList users) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\nWelcome to User's login page!");
+    public static User loginOrRegister(UsersList users, Scanner scanner) {
+        System.out.println("\n\nWelcome to User's login page!");
 
         String userId;
         while (true) {
             System.out.print("Enter your ID (9 digits): ");
             userId = scanner.nextLine();
+            System.out.println(userId);
             if (userId.matches("\\d{9}")) {
                 break;
             } else {
@@ -133,12 +134,14 @@ public class User
         while (true) {
             System.out.print("Enter your full name: ");
             String name = scanner.nextLine();
+            System.out.println(name);
             if (newUser.setName(name)) break;
         }
 
         while (true) {
             System.out.print("Enter your email: ");
             String email = scanner.nextLine();
+            System.out.println(email);
             if (newUser.setEmail(email)) break;
         }
 
@@ -153,6 +156,7 @@ public class User
     }
 
     public void cancelLastBooking(Scanner sc) {
+        System.out.println("\n---------------------Cancel Last Booking---------------------");
         Booking last = bookingStack.peek();
         if (last == null) {
             System.out.println("No active bookings to cancel.");
@@ -161,12 +165,14 @@ public class User
 
         System.out.println("\nLast booking:");
         System.out.println(last);
-        System.out.print("Cancel it? (yes/no) ");
+        System.out.print("Cancel it? (yes/no): ");
+        String answer = sc.nextLine().trim();
 
-        if (!sc.nextLine().trim().equalsIgnoreCase("yes")) {
+        if (!answer.equalsIgnoreCase("yes")) {
             System.out.println("Cancellation aborted.");
             return;
         }
+        System.out.println(answer);
 
         last.cancelBooking();
         bookingStack.pop();
@@ -179,8 +185,7 @@ public class User
         {
             BookingQueue.BookingRequest req = waitlist.peek();
             if (req.getHotel().equals(last.getHotel())
-                    && req.getCheckIn().equals(last.getCheckIn())
-                    && req.getCheckOut().equals(last.getCheckOut()))
+                    && req.getHotel().isRoomAvailable(last.getCheckIn(), last.getCheckOut()))
             {
                 waitlist.dequeue();
                 req.getUser().addWaitlistNotification(req);
@@ -198,6 +203,7 @@ public class User
     public void removeBooking() { bookingStack.pop(); }
 
     public void leaveReview(Scanner sc, HotelTree tree) {
+        System.out.println("\n---------------------Leave a Review---------------------");
         System.out.print("\nEnter hotel name to review: ");
         String name = sc.nextLine().trim();
         Hotel hotel = tree.findHotel(name);
@@ -256,8 +262,7 @@ public class User
     }
 
     public void viewNotifications(Scanner sc) {
-        System.out.println("\n=== Notifications Center ===\n");
-
+        System.out.println("\n---------------------Notifications Center---------------------\n");
         if (waitlistNotifications.isEmpty()) {
             System.out.println("You have no notifications.");
             return;

@@ -4,7 +4,6 @@ import model.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.YearMonth;
 import java.util.Scanner;
 
 public class Main
@@ -51,7 +50,7 @@ public class Main
 
         // Initialize the human objects - logging in
         Admin admin = new Admin("123456789");
-        User user = new User("ofer avioz", "oferavioz@gmail.com", "212052385");
+        User user = new User("Nitzan Avioz", "Nitzanavioz@gmail.com", "123123123");
 
         // Add the user to the user's list
         users.addUser(user);
@@ -66,70 +65,97 @@ public class Main
         Payment payment1 = new CreditCardPayment(booking1.getTotalPrice(), LocalDateTime.now(), "1234123412341234", "123", "12/2025");
         booking1.create(booking1, payment1);  // Create also does push to the stack and add to the booking list
         Booking booking2 = new Booking(user, hotel1, LocalDate.of(2025, Month.AUGUST,15), LocalDate.of(2025, Month.AUGUST,15).plusDays(4));
-        Payment payment2 = new PaypalPayment(booking2.getTotalPrice(), LocalDateTime.now(), "ofer@yahoo.com", "123456789");
+        Payment payment2 = new PaypalPayment(booking2.getTotalPrice(), LocalDateTime.now(), "Nitzan@yahoo.com", "123456789");
         booking2.create(booking2, payment2);
 
         // == Menu Functionality ==
 
+        // --- User's Perspective ---
+
+        // Run the menu
+        menu.printInitialMessage();
+
+        // User's login
+         User user1 = User.loginOrRegister(users, new Scanner("212052385\nOfer Avioz\nOferavioz@gmail.com\n"));
+         users.printUsers();
+
+        // User's menu
+        menu.printUserMenu();
+
         // View Hotel functionality - user's perspective
+        System.out.println("\n---------------------View Hotels---------------------\n");
+        System.out.println("--Tsimmer order--");
+        // South, price filter - 700, rating filter - 3 (not under), amenities filter - 8 = parking, only tsimmers, sort by price (down), select 1 (Mitzpe Ramon Tsimmer), dont show reviews, book, checkin, nights, pay by paypal
+        String script2 = "2\n700\n3\n8\nyes\n2\n1\nno\nyes\n04-09-2025\n4\n2\noferavioz@walla.co.il\n123123123\n";
+        System.setIn(new java.io.ByteArrayInputStream(script2.getBytes()));
+        new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user1);
+        System.out.println("\n--Hotel order--");
         // North, skip price filter, skip rating filter, skip amenities filter, not only tsimmers, no sort, first hotel (The Scots Hotel), show review, book, checkin, nights, pay by credit card
         // There are 2 exceptions thrown here in the payment validation - 1. Invalid card number, 2. Invalid CVV
         // There are also their fixes!
-        // String script1 = "1\n0\n0\n0\nno\n0\n1\nyes\nyes\n01-08-2025\n3\n1\n123412341234124\n12\n08/2027\n1111222233334444\n123\n";
-        // System.setIn(new java.io.ByteArrayInputStream(script1.getBytes()));
-        // new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user);
-        // South, price filter - 700, rating filter - 3 (not under), amenities filter - 8 = parking, only tsimmers, sort by price (down), select 1 (Mitzpe Ramon Tsimmer), dont show reviews, book, checkin, nights, pay by paypal
-        // String script2 = "2\n700\n3\n8\nyes\n2\n1\nno\nyes\n04-09-2025\n4\n2\noferavioz@walla.co.il\n123123123\n";
-        // System.setIn(new java.io.ByteArrayInputStream(script2.getBytes()));
-        // new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user);
-
-
-        // Search hotels by name - user's perspective
-        //hotelTree.searchHotelByName(new Scanner("The Scots hotel\nyes"), hotelTree);
-
-        // Cancel last booking - user's perspective
-        //user.cancelLastBooking(new Scanner("yes"));
+        String script1 = "1\n0\n0\n0\nno\n0\n1\nyes\nyes\n01-08-2025\n3\n1\n123412341234124\n12\n08/2027\n1111222233334444\n123\n";
+        System.setIn(new java.io.ByteArrayInputStream(script1.getBytes()));
+        new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user1);
 
         // View upcoming bookings - user's perspective
-        //user.viewUpcomingBookings();
-
-        // Leave a review - user's perspective
-        //user.leaveReview(new Scanner("dan eilat\n5\nThe BEST hotel!\nyes\n"), hotelTree);
-        // So we can see that the review was added to the hotel1's review list
-        //hotel7.printReviewList();
-
+        user1.viewUpcomingBookings();
 
         // View notifications - user's perspective
         // First, when no notifications exist
-        // user.viewNotifications(new Scanner(System.in));
-        // Then, after some bookings are made and the user is getting on the waitlist for an hotel that is fully booked
-        // String scriptForWaitlist = "1\n0\n0\n0\nno\n0\n1\nno\nyes\n15-08-2025\n3\nno\n";
-        // System.setIn(new java.io.ByteArrayInputStream(scriptForWaitlist.getBytes()));
-        // new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user);
-        // user.viewNotifications(new Scanner(System.in));
+        user1.viewNotifications(new Scanner(System.in));
+
+        // == Waitlist Functionality ==
+        System.out.println("\n-----Hotel booking to demonstrate waitlist functionality(from view hotels)-----\n");
+        String scriptForWaitlist = "1\n0\n0\n0\nno\n0\n1\nno\nyes\n15-08-2025\n3\nno\n";
+        System.setIn(new java.io.ByteArrayInputStream(scriptForWaitlist.getBytes()));
+        new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user1);
+
+        // Now, the user1 is on a waitlist for the hotel1 (The Scots Hotel) - which is fully booked
+        System.out.println("\n--> After some booking are made and user1(ofer) is on a waitlist");
+        user1.viewNotifications(new Scanner(System.in));
+
+
+        // Cancel last booking - user's perspective
         // Now, cancelling one booking for the hotel so that the user can get off the waitlist and book it
-        // user.cancelLastBooking(new Scanner("yes\n"));
-        // user.viewNotifications(new Scanner("yes\n1\n1111222211112222\n111\n09/2026\n"));
+        // The booking is canceled by user - Nitzan Avioz
+        user.cancelLastBooking(new Scanner("yes\n"));
+
+        // Now, the user1 will be able to book the hotel1 (The Scots Hotel) - which is now available
+        System.out.println("\n--> User1(ofer) got notified about The Scots Hotel availability and can book it now");
+        user1.viewNotifications(new Scanner("yes\n1\n1111222211112222\n111\n09/2026\n"));
         // Again, the user will have no notifications after the booking is made
-        // user.viewNotifications(new Scanner(System.in));
+         user.viewNotifications(new Scanner(System.in));
+
+        // Leave a review - user's perspective
+        user1.leaveReview(new Scanner("dan eilat\n5\nThe BEST hotel!\nyes\n"), hotelTree);
+        // So we can see that the review was added to the hotel1's review list
+        hotel7.printReviewList();
+
+        // Search hotels by name - user's perspective
+        hotelTree.searchHotelByName(new Scanner("The Scots hotel\nyes"), hotelTree);
+
+        // --- Admin's Perspective ---
+
+        // Admin's login
+        menu.printInitialMessage();
+        Admin admin1 = Admin.adminLogin(new Scanner("123456789\n"));
 
         // Add hotel - admin's perspective
-        // String scriptForAddHotel = "Malkat Shva Eilat\n2\n1\nDerech hayam 1\n500\n3\nwifi,parking\n4\n4\n";
-        // System.setIn(new java.io.ByteArrayInputStream(scriptForAddHotel.getBytes()));
-        // admin.addHotelInteractive(new java.util.Scanner(System.in), hotelTree);
+        String scriptForAddHotel = "Malkat Shva Eilat\n2\n1\nDerech hayam 1\n500\n3\nwifi,parking\n4\n4\n";
+        System.setIn(new java.io.ByteArrayInputStream(scriptForAddHotel.getBytes()));
+        admin.addHotelInteractive(new java.util.Scanner(System.in), hotelTree);
         // Now we can see that the hotel was added to the hotelTree
-        // admin.viewHotelsByRegion(hotelTree, new Scanner("2\n"));
+        admin.viewHotelsByRegion(hotelTree, new Scanner("2\n"));
 
         // Remove hotel - admin's perspective
-        // admin.removeHotelInteractive(new java.util.Scanner("Mamilla hotel\n3\n1\nyes\n"), hotelTree);
+        admin.removeHotelInteractive(new java.util.Scanner("Mamilla hotel\n3\n1\nyes\n"), hotelTree);
         // Now we can see that the hotel was removed from the hotelTree
-        // admin.viewHotelsByRegion(hotelTree, new Scanner("3\n"));
+        admin.viewHotelsByRegion(hotelTree, new Scanner("3\n"));
 
         // View all users - admin's perspective, an inner method of the UsersList class - used in the Admin menu
-        // users.printUsers();
+        users.printUsers();
 
-        // View Hotels by region - admin's perspective - South
-        // admin.viewHotelsByRegion(hotelTree, new Scanner("2\n"));
+        System.out.println("\n\n====== Thank You For Using Our System <3 =====\n");
 
         // == General Functionality ==
 
@@ -138,7 +164,5 @@ public class Main
         // view hotel's availability matrix after booking the limited number of rooms
         // hotel1.displayAvailabilityMatrix(2025, 8);
         // Now we can see that the availability matrix has been updated after the booking - there are X's in the booked dates
-
-        //menu.run();
     }
 }
