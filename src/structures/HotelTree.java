@@ -137,6 +137,7 @@ public class HotelTree
         System.out.print("\nEnter hotel's name to search: ");
         String hotelName = scanner.nextLine().trim();
         Hotel hotel = tree.findHotel(hotelName);
+        System.out.print(hotelName);
         if (hotel != null) {
             System.out.println("\nHotel found! you searched for : " + hotel.getName() + ", " + hotel.getRegion() + "\n");
         } else {
@@ -145,8 +146,9 @@ public class HotelTree
             return;
         }
         hotel.printHotelDetails();
-        System.out.println("\nWould you like to see hotel's reviews? (yes/no) ");
+        System.out.print("\nWould you like to see hotel's reviews? (yes/no): ");
         String resp = scanner.nextLine().trim();
+        System.out.println(resp);
         if (resp.equalsIgnoreCase("yes"))
         {
             hotel.printReviewList();

@@ -85,15 +85,15 @@ public class Main
         // View Hotel functionality - user's perspective
         System.out.println("\n---------------------View Hotels---------------------\n");
         System.out.println("--Tsimmer order--");
-        // South, price filter - 700, rating filter - 3 (not under), amenities filter - 8 = parking, only tsimmers, sort by price (down), select 1 (Mitzpe Ramon Tsimmer), dont show reviews, book, checkin, nights, pay by paypal
-        String script2 = "2\n700\n3\n8\nyes\n2\n1\nno\nyes\n04-09-2025\n4\n2\noferavioz@walla.co.il\n123123123\n";
+        // South, price filter - 700, rating filter - 3 (not under), amenities filter - 8 = parking, only tsimmers, skip sort, select 1 (Mitzpe Ramon Tsimmer), dont show reviews, book, checkin, nights, pay by paypal
+        String script2 = "2\n700\n3\n8\nyes\n0\n1\nno\nyes\n04-09-2025\n4\n2\noferavioz@walla.co.il\n123123123\n";
         System.setIn(new java.io.ByteArrayInputStream(script2.getBytes()));
         new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user1);
         System.out.println("\n--Hotel order--");
-        // North, skip price filter, skip rating filter, skip amenities filter, not only tsimmers, no sort, first hotel (The Scots Hotel), show review, book, checkin, nights, pay by credit card
+        // North, skip price filter, skip rating filter, skip amenities filter, not only tsimmers, sort by price (1), first hotel (The Scots Hotel), show review, book, checkin, nights, pay by credit card
         // There are 2 exceptions thrown here in the payment validation - 1. Invalid card number, 2. Invalid CVV
         // There are also their fixes!
-        String script1 = "1\n0\n0\n0\nno\n0\n1\nyes\nyes\n01-08-2025\n3\n1\n123412341234124\n12\n08/2027\n1111222233334444\n123\n";
+        String script1 = "1\n0\n0\n0\nno\n1\n1\nyes\nyes\n01-08-2025\n3\n1\n123412341234124\n12\n08/2027\n1111222233334444\n12\n123\n";
         System.setIn(new java.io.ByteArrayInputStream(script1.getBytes()));
         new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user1);
 
@@ -135,7 +135,7 @@ public class Main
         hotelTree.searchHotelByName(new Scanner("The Scots hotel\nyes"), hotelTree);
 
         // --- Admin's Perspective ---
-
+        System.out.println("\n---------------------------------------------------------\n");
         // Admin's login
         menu.printInitialMessage();
         Admin admin1 = Admin.adminLogin(new Scanner("123456789\n"));

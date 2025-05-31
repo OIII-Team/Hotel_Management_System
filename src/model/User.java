@@ -206,6 +206,7 @@ public class User
         System.out.println("\n---------------------Leave a Review---------------------");
         System.out.print("\nEnter hotel name to review: ");
         String name = sc.nextLine().trim();
+        System.out.println(name);
         Hotel hotel = tree.findHotel(name);
         if (hotel == null) {
             System.out.println("Hotel not found. Returning to menu.");
@@ -213,10 +214,11 @@ public class User
         }
 
         System.out.print("\n-- Leave a Review for " + hotel.getName() + " --\n");
-        System.out.println("Your rating (1–5): ");
+        System.out.print("Your rating (1–5): ");
         int rating;
         while (true) {
             String line = sc.nextLine().trim();
+            System.out.println(line);
             try {
                 rating = Integer.parseInt(line);
             } catch (NumberFormatException e) {
@@ -227,14 +229,16 @@ public class User
             System.out.println("Invalid range. Enter 1–5: ");
         }
 
-        System.out.println("Your comment: ");
+        System.out.print("Your comment: ");
         String comment = sc.nextLine().trim();
+        System.out.println(comment);
         while (comment.isBlank()) {
             System.out.println("Cannot be empty. Try again: ");
             comment = sc.nextLine().trim();
         }
-        System.out.println("Are you sure you want to submit this review? (yes/no) ");
+        System.out.print("Are you sure you want to submit this review? (yes/no): ");
         String confirmation = sc.nextLine().trim();
+        System.out.println(confirmation);
         if (!confirmation.equalsIgnoreCase("yes")) {
             System.out.println("Review submission cancelled.");
             return;
@@ -277,8 +281,9 @@ public class User
             System.out.printf("%s: %s → %s%n", hotel.getName(), in, out);
 
             if (hotel.isRoomAvailable(in, out)) {
-                System.out.println("Room is available! Complete payment and book? (yes/no): ");
+                System.out.print("Room is available! \nComplete payment and book? (yes/no): ");
                 String resp = sc.nextLine().trim();
+                System.out.println(resp);
                 if (!resp.equalsIgnoreCase("yes")) {
                     System.out.println("OK, your booking request is cancelled.");
                     it.remove();
@@ -289,27 +294,33 @@ public class User
                 Payable payer;
                 String paymentRef = "";
                 while (true) {
-                    System.out.println("Select payment method:");
+                    System.out.println("\nSelect payment method:");
                     System.out.println("1) Credit Card");
                     System.out.println("2) PayPal");
                     String choice = sc.nextLine().trim();
+                    System.out.println(choice);
 
                     if (choice.equals("1")) {
-                        System.out.println("Card Number (16 digits): ");
+                        System.out.print("Card Number (16 digits): ");
                         String cardNum = sc.nextLine().trim();
-                        System.out.println("CVV (3 digits): ");
+                        System.out.println(cardNum);
+                        System.out.print("CVV (3 digits): ");
                         String cvv = sc.nextLine().trim();
-                        System.out.println("Expiry (MM/yyyy): ");
+                        System.out.println(cvv);
+                        System.out.print("Expiry (MM/yyyy): ");
                         String expStr = sc.nextLine().trim();
+                        System.out.println(expStr);
 
                         payer = new CreditCardPayment(amount, LocalDateTime.now(), cardNum, cvv, expStr);
                         paymentRef = cardNum.length() > 4 ? cardNum.substring(cardNum.length() - 4) : cardNum;
                         break;
                     } else if (choice.equals("2")) {
-                        System.out.println("PayPal Email: ");
+                        System.out.print("PayPal Email: ");
                         String email = sc.nextLine().trim();
-                        System.out.println("PayPal Account ID for confirmation: ");
+                        System.out.println(email);
+                        System.out.print("PayPal Account ID for confirmation: ");
                         String id = sc.nextLine().trim();
+                        System.out.println(id);
                         payer = new PaypalPayment(amount, LocalDateTime.now(), email, id);
                         break;
                     } else {

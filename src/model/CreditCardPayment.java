@@ -43,14 +43,26 @@ public class CreditCardPayment extends Payment
         }
     }
 
+    public boolean validateSucceeded()
+    {
+        try {
+            validatePayment();
+            return true;
+        } catch (HotelSystemPaymentExceptions e) {
+            return false;
+        }
+    }
+
     public boolean processPayment(double netAmount, Scanner scanner)
     {
-        //Scanner sc = new Scanner(System.in);
         int maxAttempts = 3;
         int attempts = 0;
 
         while (attempts < maxAttempts)
         {
+            if (!validateSucceeded()){
+            System.out.println("Attempts remaining: " + (maxAttempts - attempts));
+        }
             try
             {
                 validatePayment();
@@ -58,25 +70,33 @@ public class CreditCardPayment extends Payment
             } catch (HotelSystemPaymentExceptions.InvalidCardNumberException ex)
             {
                 System.out.println(ex.getMessage());
-                System.out.println("Re-enter Card Number: ");
+                System.out.print("Re-enter Card Number: ");
                 cardNumber = scanner.nextLine().trim();
+                System.out.println(cardNumber);
+
             } catch (HotelSystemPaymentExceptions.InvalidCVVException ex)
             {
                 System.out.println(ex.getMessage());
-                System.out.println("Re-enter CVV: ");
+                System.out.print("Re-enter CVV: ");
                 cvv = scanner.nextLine().trim();
-            } catch (HotelSystemPaymentExceptions.DateException ex) {
+                System.out.println(cvv);
+            } catch (HotelSystemPaymentExceptions.DateException ex)
+            {
                 System.out.println(ex.getMessage());
-                System.out.println("Re-enter Expiry (MM/yyyy): ");
+                System.out.print("Re-enter Expiry (MM/yyyy): ");
                 expirationDateString = scanner.nextLine().trim();
+                System.out.println(expirationDateString);
             }
 
-            attempts++;
-            if (attempts >= maxAttempts) {
-                System.out.println("Maximum attempts reached.");
-                return false;
+            if (!validateSucceeded())
+            {
+                attempts++;
+                if (attempts >= maxAttempts)
+                {
+                    System.out.println("Maximum attempts reached.");
+                    return false;
+                }
             }
-            else System.out.println("Attempts remaining: " + (maxAttempts - attempts));
         }
         return false;
     }
