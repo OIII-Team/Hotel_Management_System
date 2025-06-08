@@ -2,13 +2,6 @@ package exceptions;
 
 public class HotelSystemPaymentExceptions extends RuntimeException
 {
-
-    private static final long serialVersionUID = 1L;
-
-    public HotelSystemPaymentExceptions()
-    {
-    }
-
     public HotelSystemPaymentExceptions(String message)
     {
         super(message);
@@ -51,6 +44,22 @@ public class HotelSystemPaymentExceptions extends RuntimeException
             {
                 super("Card expired!");
             }
+        }
+    }
+
+    public static class InvalidEmailException extends HotelSystemPaymentExceptions
+    {
+        public InvalidEmailException()
+        {
+            super("Invalid email address.");
+        }
+    }
+
+    public static class InvalisPayerIdException extends HotelSystemPaymentExceptions
+    {
+        public InvalisPayerIdException()
+        {
+            super("Invalid payer ID.");
         }
     }
 }

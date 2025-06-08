@@ -155,7 +155,7 @@ public class Main
         // View all users - admin's perspective, an inner method of the UsersList class - used in the Admin menu
         users.printUsers();
 
-        System.out.println("\n\n====== Thank You For Using Our System <3 =====\n");
+        System.out.println("\n\n====== Thank You For Using Our System <3 ======\n");
 
         // == General Functionality ==
 

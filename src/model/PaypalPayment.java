@@ -19,9 +19,9 @@ public class PaypalPayment extends Payment
     public void validatePayment() throws HotelSystemPaymentExceptions
     {
         if (payerEmail == null || !payerEmail.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$"))
-            throw new HotelSystemPaymentExceptions("Invalid email address");
+            throw new HotelSystemPaymentExceptions.InvalidEmailException();
         if (payerId == null || payerId.isEmpty() || !payerId.matches("\\d{9}"))
-            throw new HotelSystemPaymentExceptions("Invalid payer ID");
+            throw new HotelSystemPaymentExceptions.InvalisPayerIdException();
     }
 
 

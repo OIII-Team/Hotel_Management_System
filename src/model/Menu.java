@@ -3,6 +3,17 @@ package model;
 import structures.*;
 import java.util.Scanner;
 
+// This Menu Class was created to handle the user and admin interactions in the system interactively.
+// Nadav said that the whole system has to be controlled by the Main class instead of the Menu class
+// so i changed everything to be as he wanted.
+// However, I still think that the Menu class is a good idea to handle the user and admin interactions so i kept it
+// in order to use it after the project is finished.
+// The functions that we used in the project to implement the main properly are -
+// Prints (printInitialMessage, printUserMenu, adminMenu)
+// and the run function and user/admin menus are not used as switch cases in the Main class as they were in the Menu class.
+// Basicly, the Menu class was created to make the system flow like a real one.
+// This project is shown as a prototype of a real hotel management system. like Nadav said :)
+
 public class Menu {
 
     private final HotelTree hotelTree;
