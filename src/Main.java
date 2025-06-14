@@ -1,3 +1,11 @@
+// This is the main class of the project, this main initialize, run the system and demonstrate its functionality.
+// There are syntax and input checks for every part of the code!!
+// Not everything is shown here because we know its not the purpose of this project but they exists!!
+// When you start the system and run the code- there are paths and tests of the system that are shown
+// in order to demonstrate the functionality of the system.
+// We hope the project answers the requirements and is easy to use and understand.
+// Thanks a lot!
+
 import structures.*;
 import model.*;
 
@@ -60,11 +68,11 @@ public class Main
         hotel1.addReview(review1);
 
         // Booking creation
-        Booking booking1 = new Booking(user, hotel1, LocalDate.of(2025, Month.AUGUST,15), LocalDate.of(2025, Month.AUGUST,15).plusDays(3));
+        Booking booking1 = new Booking(user, hotel1, LocalDate.of(2026, Month.AUGUST,15), LocalDate.of(2026, Month.AUGUST,15).plusDays(3));
           // Payment creation for booking
         Payment payment1 = new CreditCardPayment(booking1.getTotalPrice(), LocalDateTime.now(), "1234123412341234", "123", "12/2025");
         booking1.create(booking1, payment1);  // Create also does push to the stack and add to the booking list
-        Booking booking2 = new Booking(user, hotel1, LocalDate.of(2025, Month.AUGUST,15), LocalDate.of(2025, Month.AUGUST,15).plusDays(4));
+        Booking booking2 = new Booking(user, hotel1, LocalDate.of(2026, Month.AUGUST,15), LocalDate.of(2026, Month.AUGUST,15).plusDays(4));
         Payment payment2 = new PaypalPayment(booking2.getTotalPrice(), LocalDateTime.now(), "Nitzan@yahoo.com", "123456789");
         booking2.create(booking2, payment2);
 
@@ -77,6 +85,7 @@ public class Main
 
         // User's login
          User user1 = User.loginOrRegister(users, new Scanner("212052385\nOfer Avioz\nOferavioz@gmail.com\n"));
+         // To show that the user was added to the users list
          users.printUsers();
 
         // User's menu
@@ -93,11 +102,11 @@ public class Main
         // North, skip price filter, skip rating filter, skip amenities filter, not only tsimmers, sort by price (1), first hotel (The Scots Hotel), show review, book, checkin, nights, pay by credit card
         // There are 2 exceptions thrown here in the payment validation - 1. Invalid card number, 2. Invalid CVV
         // There are also their fixes!
-        String script1 = "1\n0\n0\n0\nno\n1\n1\nyes\nyes\n01-08-2025\n3\n1\n123412341234124\n12\n08/2027\n1111222233334444\n12\n123\n";
+        String script1 = "1\n0\n0\n0\nno\n1\n1\nyes\nyes\n01-08-2026\n3\n1\n123412341234124\n12\n08/2027\n1111222233334444\n12\n123\n";
         System.setIn(new java.io.ByteArrayInputStream(script1.getBytes()));
         new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user1);
 
-        // View upcoming bookings - user's perspective
+        // View upcoming bookings - user's perspective - for user1 who is now the current user in the system
         user1.viewUpcomingBookings();
 
         // View notifications - user's perspective
@@ -106,7 +115,7 @@ public class Main
 
         // == Waitlist Functionality ==
         System.out.println("\n-----Hotel booking to demonstrate waitlist functionality(from view hotels)-----\n");
-        String scriptForWaitlist = "1\n0\n0\n0\nno\n0\n1\nno\nyes\n15-08-2025\n3\nno\n";
+        String scriptForWaitlist = "1\n0\n0\n0\nno\n0\n1\nno\nyes\n15-08-2026\n3\nno\n";
         System.setIn(new java.io.ByteArrayInputStream(scriptForWaitlist.getBytes()));
         new HotelsView(hotelTree, waitList).run(new Scanner(System.in), user1);
 
@@ -120,7 +129,7 @@ public class Main
         // The booking is canceled by user - Nitzan Avioz
         user.cancelLastBooking(new Scanner("yes\n"));
 
-        // Now, the user1 will be able to book the hotel1 (The Scots Hotel) - which is now available
+        // Now, user1 will be able to book the hotel1 (The Scots Hotel) - which is now available
         System.out.println("\n--> User1(ofer) got notified about The Scots Hotel availability and can book it now");
         user1.viewNotifications(new Scanner("yes\n1\n1111222211112222\n111\n09/2026\n"));
         // Again, the user will have no notifications after the booking is made
